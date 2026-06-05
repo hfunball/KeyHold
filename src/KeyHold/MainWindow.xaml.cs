@@ -18,6 +18,7 @@ public partial class MainWindow
     private AppSettings settings;
     private BindingTarget? captureTarget;
     private bool isLoading;
+    private bool allowClose;
 
     public MainWindow(AppSettings settings, ConfigService configService, KeyHoldEngine engine, StartupService startupService)
     {
@@ -51,10 +52,21 @@ public partial class MainWindow
 
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
+        if (allowClose)
+        {
+            base.OnClosing(e);
+            return;
+        }
+
         captureTarget = null;
         engine.SetUiCaptureActive(false);
         e.Cancel = true;
         Hide();
+    }
+
+    public void AllowClose()
+    {
+        allowClose = true;
     }
 
     protected override void OnDeactivated(EventArgs e)

@@ -77,7 +77,7 @@ public partial class App
 
     private void ExitApplication()
     {
+        mainWindow?.AllowClose();
         Shutdown();
     }
 }
-
