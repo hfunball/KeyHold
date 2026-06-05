@@ -3,19 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KeyHold Brand Boards</title>
+  <title>KeyHold Brand Board</title>
   <style>
     :root {
-      color-scheme: dark light;
+      color-scheme: dark;
       font-family: "Segoe UI", system-ui, sans-serif;
       background: #0d1015;
       color: #f5f7fa;
+      --bg: #101318;
+      --panel: #171b22;
+      --panel-2: #1d232c;
+      --text: #f5f7fa;
+      --muted: #a9b2c3;
+      --border: #29313d;
+      --accent: #35a7ff;
+      --accent-strong: #006dd9;
+      --active: #58d68d;
+      --danger: #d94444;
+      --light-bg: #f5f7fb;
+      --light-panel: #ffffff;
+      --light-text: #161a20;
+      --light-muted: #5e6878;
+      --light-border: #d6dde8;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       padding: 32px;
-      background: #0d1015;
+      background:
+        linear-gradient(135deg, rgb(53 167 255 / 10%), transparent 34%),
+        #0d1015;
     }
 
     main {
@@ -23,251 +44,557 @@
       margin: 0 auto;
     }
 
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
     h1 {
-      margin: 0 0 8px;
-      font-size: 34px;
+      margin-bottom: 8px;
+      font-size: 36px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 16px;
       letter-spacing: 0;
     }
 
     .intro {
-      margin: 0 0 28px;
-      color: #a9b2c3;
-      max-width: 760px;
-      line-height: 1.45;
+      margin-bottom: 26px;
+      color: var(--muted);
+      max-width: 820px;
+      line-height: 1.48;
     }
 
-    .boards {
+    .grid {
       display: grid;
-      gap: 20px;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
     }
 
-    .board {
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
       border: 1px solid var(--border);
-      background: var(--bg);
+      background: rgb(23 27 34 / 94%);
       border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 18px 45px rgb(0 0 0 / 28%);
+      padding: 20px;
+      box-shadow: 0 18px 46px rgb(0 0 0 / 24%);
     }
 
-    .board header {
+    .decision {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .wordmark {
       display: flex;
       align-items: center;
       gap: 14px;
-      padding: 18px;
-      border-bottom: 1px solid var(--border);
+      min-width: 0;
     }
 
     .mark {
-      width: 50px;
-      height: 50px;
+      width: 58px;
+      height: 58px;
       flex: 0 0 auto;
     }
 
     .name {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      background: rgb(88 214 141 / 15%);
+      border: 1px solid rgb(88 214 141 / 46%);
+      color: #a7f2c4;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .summary {
+      color: var(--muted);
+      line-height: 1.48;
+      margin-bottom: 18px;
+    }
+
+    .criteria {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .criterion {
+      border: 1px solid var(--border);
+      background: #12161d;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 96px;
+    }
+
+    .criterion strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .criterion span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .app-preview {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .app-title {
       font-size: 24px;
       font-weight: 650;
     }
 
-    .note {
+    .app-subtitle {
       color: var(--muted);
       font-size: 13px;
-      margin-top: 2px;
+      margin-top: 4px;
     }
 
-    .content {
-      padding: 18px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .mock {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-    }
-
-    .mock-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .mock-title {
-      font-weight: 650;
-      font-size: 18px;
-    }
-
-    .pill {
-      background: var(--accent);
-      color: var(--pill-text);
-      padding: 5px 10px;
+    .status {
+      background: var(--active);
+      color: #061106;
+      padding: 7px 12px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .rows {
-      margin-top: 16px;
+    .tabs {
+      display: flex;
+      gap: 2px;
+      padding: 12px 14px 0;
+      background: #11161d;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 8px 12px;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-bottom: 0;
+      border-radius: 6px 6px 0 0;
+      font-size: 13px;
+    }
+
+    .tab.active {
+      color: var(--text);
+      background: var(--panel);
+      border-color: var(--border);
+    }
+
+    .settings {
+      padding: 16px;
       display: grid;
       gap: 10px;
     }
 
     .row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      gap: 16px;
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 10px;
+      padding: 11px 12px;
       color: var(--muted);
     }
 
     .row strong {
       color: var(--text);
+      font-weight: 650;
     }
 
-    .palette {
-      display: flex;
-      gap: 8px;
+    .lockup-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .swatch {
-      width: 38px;
-      height: 38px;
-      border-radius: 6px;
-      border: 1px solid rgb(255 255 255 / 18%);
+      min-height: 92px;
+      border-radius: 8px;
+      border: 1px solid rgb(255 255 255 / 14%);
       background: var(--color);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: var(--label);
     }
 
-    .caption {
+    .swatch span {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .swatch code {
+      font: 12px Consolas, monospace;
+      opacity: 0.86;
+    }
+
+    .tray-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .tray-sample {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.4;
+    }
+
+    .tray {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: #171b22;
+      border: 2px solid var(--tray);
+      display: grid;
+      place-items: center;
+    }
+
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .do-list,
+    .dont-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .routes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .route {
+      border: 1px solid var(--border);
+      background: #11161d;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .route-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .score {
+      color: var(--active);
+      font-size: 13px;
+    }
+
+    .route p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+      margin-bottom: 0;
+    }
+
+    .token-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .token-table th,
+    .token-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .token-table th {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .token-table td {
+      color: var(--muted);
+    }
+
+    .token-table code {
+      color: var(--text);
+      font-family: Consolas, monospace;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 18px;
+      }
+
+      .hero,
+      .lockup-grid,
+      .voice-grid,
+      .routes,
+      .criteria {
+        grid-template-columns: 1fr;
+      }
+
+      .decision {
+        align-items: flex-start;
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1>KeyHold Brand Boards</h1>
-    <p class="intro">Three understated tech routes for the beta tray app. Each route includes a logo direction, tray mark behavior, dark and light UI palette, and a small settings surface.</p>
+  <main class="grid">
+    <section>
+      <h1>KeyHold Brand Board</h1>
+      <p class="intro">A practical early lock for the Windows tray utility. The brand should feel visible, calm, and purpose-built for single-player use, with no suggestion of stealth, scripting, or competitive automation.</p>
+    </section>
 
-    <section class="boards">
-      <article class="board" style="--bg:#101318;--panel:#171b22;--text:#f5f7fa;--muted:#a9b2c3;--border:#29313d;--accent:#35a7ff;--pill-text:#07111b;">
-        <header>
-          <svg class="mark" viewBox="0 0 64 64" aria-label="KeyLatch logo">
-            <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#35a7ff" stroke-width="3"/>
-            <rect x="17" y="23" width="27" height="9" rx="3" fill="#35a7ff"/>
-            <rect x="37" y="29" width="8" height="19" rx="3" fill="#35a7ff"/>
-            <circle cx="24" cy="41" r="7" fill="#f5f7fa"/>
-          </svg>
-          <div>
-            <div class="name">KeyLatch</div>
-            <div class="note">Most direct, most ownable feeling.</div>
-          </div>
-        </header>
-        <div class="content">
-          <div class="mock">
-            <div class="mock-top">
-              <div>
-                <div class="mock-title">KeyLatch</div>
-                <div class="caption">Holding: Shift, W</div>
-              </div>
-              <div class="pill">ACTIVE</div>
-            </div>
-            <div class="rows">
-              <div class="row"><strong>Enable</strong><span>Page Up</span></div>
-              <div class="row"><strong>Stop</strong><span>Page Down</span></div>
-              <div class="row"><strong>Theme</strong><span>Dark</span></div>
+    <section class="hero">
+      <article class="panel">
+        <div class="decision">
+          <div class="wordmark">
+            <svg class="mark" viewBox="0 0 64 64" aria-label="KeyHold logo">
+              <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#35a7ff" stroke-width="3"/>
+              <rect x="17" y="23" width="27" height="9" rx="3" fill="#35a7ff"/>
+              <rect x="37" y="29" width="8" height="19" rx="3" fill="#35a7ff"/>
+              <circle cx="24" cy="42" r="7" fill="#f5f7fa"/>
+              <rect x="22" y="36" width="4" height="10" rx="2" fill="#171b22"/>
+            </svg>
+            <div>
+              <div class="name">KeyHold</div>
+              <div class="tagline">Hold movement keys without holding your hand there.</div>
             </div>
           </div>
-          <div class="palette">
-            <span class="swatch" style="--color:#101318"></span>
-            <span class="swatch" style="--color:#171b22"></span>
-            <span class="swatch" style="--color:#35a7ff"></span>
-            <span class="swatch" style="--color:#f5f7fa"></span>
+          <div class="badge">Recommended lock</div>
+        </div>
+
+        <p class="summary">Keep KeyHold as the beta name. It is direct, already reflected across the codebase, and clear enough for players who just want a small utility that captures the keys they are physically pressing and keeps them down until they stop.</p>
+
+        <div class="criteria">
+          <div class="criterion">
+            <strong>Clear</strong>
+            <span>The name describes the behavior in plain English.</span>
           </div>
-          <p class="caption">Best default for the product: clear, practical, and easy to explain.</p>
+          <div class="criterion">
+            <strong>Safety-aligned</strong>
+            <span>It does not imply macros, stealth, or anti-cheat bypassing.</span>
+          </div>
+          <div class="criterion">
+            <strong>Low churn</strong>
+            <span>The repo, UI, tray text, settings path, and docs already match.</span>
+          </div>
         </div>
       </article>
 
-      <article class="board" style="--bg:#07111b;--panel:#0f1b2a;--text:#f7fbff;--muted:#9eb4c8;--border:#25415c;--accent:#27d8ff;--pill-text:#061016;">
-        <header>
-          <svg class="mark" viewBox="0 0 64 64" aria-label="KeyRun logo">
-            <rect x="5" y="5" width="54" height="54" rx="12" fill="#0f1b2a" stroke="#27d8ff" stroke-width="3"/>
-            <path d="M17 35h25l-6 8h9l10-13-10-13h-9l6 8H17z" fill="#27d8ff"/>
-            <circle cx="18" cy="46" r="4" fill="#f7fbff"/>
-          </svg>
+      <article class="app-preview">
+        <div class="app-header">
           <div>
-            <div class="name">KeyRun</div>
-            <div class="note">Good energy, but less unique.</div>
+            <div class="app-title">KeyHold</div>
+            <div class="app-subtitle">Held-key utility for single-player Windows gaming</div>
           </div>
-        </header>
-        <div class="content">
-          <div class="mock">
-            <div class="mock-top">
-              <div>
-                <div class="mock-title">KeyRun</div>
-                <div class="caption">Ready for Satisfactory</div>
-              </div>
-              <div class="pill">READY</div>
-            </div>
-            <div class="rows">
-              <div class="row"><strong>Mode</strong><span>Mouse trigger</span></div>
-              <div class="row"><strong>Trigger</strong><span>Mouse Button 4</span></div>
-              <div class="row"><strong>Theme</strong><span>System</span></div>
-            </div>
-          </div>
-          <div class="palette">
-            <span class="swatch" style="--color:#07111b"></span>
-            <span class="swatch" style="--color:#0f1b2a"></span>
-            <span class="swatch" style="--color:#27d8ff"></span>
-            <span class="swatch" style="--color:#f7fbff"></span>
-          </div>
-          <p class="caption">Best if the app expands toward repeat-run behaviors, but the name already appears in several unrelated projects.</p>
+          <div class="status">HOLDING</div>
+        </div>
+        <div class="tabs">
+          <div class="tab active">Status</div>
+          <div class="tab">Bindings</div>
+          <div class="tab">Settings</div>
+          <div class="tab">Diagnostics</div>
+        </div>
+        <div class="settings">
+          <div class="row"><strong>Held keys</strong><span>Shift, W</span></div>
+          <div class="row"><strong>Enable</strong><span>Page Up</span></div>
+          <div class="row"><strong>Stop</strong><span>Page Down</span></div>
+          <div class="row"><strong>Emergency</strong><span>F12</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="lockup-grid">
+      <article class="panel">
+        <h2>Palette</h2>
+        <div class="swatches">
+          <div class="swatch" style="--color:#101318;--label:#f5f7fa;"><span>Graphite</span><code>#101318</code></div>
+          <div class="swatch" style="--color:#171b22;--label:#f5f7fa;"><span>Panel</span><code>#171B22</code></div>
+          <div class="swatch" style="--color:#35a7ff;--label:#07111b;"><span>Idle Blue</span><code>#35A7FF</code></div>
+          <div class="swatch" style="--color:#58d68d;--label:#061106;"><span>Hold Green</span><code>#58D68D</code></div>
+          <div class="swatch" style="--color:#f5f7fa;--label:#161a20;"><span>Text</span><code>#F5F7FA</code></div>
         </div>
       </article>
 
-      <article class="board" style="--bg:#10130f;--panel:#181d16;--text:#f5f8f0;--muted:#abb8a4;--border:#2c3828;--accent:#6ee680;--pill-text:#061106;">
-        <header>
-          <svg class="mark" viewBox="0 0 64 64" aria-label="PressLatch logo">
-            <rect x="5" y="5" width="54" height="54" rx="12" fill="#181d16" stroke="#6ee680" stroke-width="3"/>
-            <rect x="15" y="20" width="34" height="22" rx="11" fill="#2c3828"/>
-            <circle cx="38" cy="31" r="10" fill="#6ee680"/>
-            <rect x="21" y="45" width="22" height="4" rx="2" fill="#f5f8f0"/>
-          </svg>
-          <div>
-            <div class="name">PressLatch</div>
-            <div class="note">Mechanical, simple, utility-first.</div>
-          </div>
-        </header>
-        <div class="content">
-          <div class="mock">
-            <div class="mock-top">
-              <div>
-                <div class="mock-title">PressLatch</div>
-                <div class="caption">No keys held</div>
-              </div>
-              <div class="pill">IDLE</div>
+      <article class="panel">
+        <h2>Tray States</h2>
+        <div class="tray-row">
+          <div class="tray-sample">
+            <div class="tray" style="--tray:#35a7ff;">
+              <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="17" y="23" width="27" height="9" rx="3" fill="#35a7ff"/>
+                <rect x="37" y="29" width="8" height="19" rx="3" fill="#35a7ff"/>
+                <circle cx="24" cy="42" r="7" fill="#f5f7fa"/>
+              </svg>
             </div>
-            <div class="rows">
-              <div class="row"><strong>Enable</strong><span>Page Up</span></div>
-              <div class="row"><strong>Emergency</strong><span>F12</span></div>
-              <div class="row"><strong>Startup</strong><span>On</span></div>
+            <span>Idle</span>
+          </div>
+          <div class="tray-sample">
+            <div class="tray" style="--tray:#58d68d;">
+              <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="17" y="23" width="27" height="9" rx="3" fill="#58d68d"/>
+                <rect x="37" y="29" width="8" height="19" rx="3" fill="#58d68d"/>
+                <circle cx="24" cy="42" r="7" fill="#f5f7fa"/>
+              </svg>
             </div>
+            <span>Holding</span>
           </div>
-          <div class="palette">
-            <span class="swatch" style="--color:#10130f"></span>
-            <span class="swatch" style="--color:#181d16"></span>
-            <span class="swatch" style="--color:#6ee680"></span>
-            <span class="swatch" style="--color:#f5f8f0"></span>
-          </div>
-          <p class="caption">Solid backup route. It feels precise, though a little less friendly than KeyLatch.</p>
         </div>
       </article>
+    </section>
+
+    <section class="voice-grid">
+      <article class="panel">
+        <h2>Voice</h2>
+        <ul class="do-list">
+          <li>Use direct, specific utility language.</li>
+          <li>Say “single-player” when describing intended use.</li>
+          <li>Keep warnings plain and practical.</li>
+          <li>Use “holding keys” and “release all” consistently.</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>Avoid</h2>
+        <ul class="dont-list">
+          <li>Macro, bot, bypass, stealth, and automation framing.</li>
+          <li>Competitive or multiplayer advantage language.</li>
+          <li>Overpromising compatibility with protected games.</li>
+          <li>Flashy gamer visual tropes that make the app feel risky.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Name Routes</h2>
+      <div class="routes">
+        <div class="route">
+          <div class="route-title"><span>KeyHold</span><span class="score">Lock</span></div>
+          <p>Best fit. Clear, product-ready, safety-aligned, and already wired through the current app.</p>
+        </div>
+        <div class="route">
+          <div class="route-title"><span>KeyLatch</span><span class="score">Backup</span></div>
+          <p>Strong alternate if KeyHold becomes unavailable. More mechanical, but still clear.</p>
+        </div>
+        <div class="route">
+          <div class="route-title"><span>KeyRun</span><span class="score">Park</span></div>
+          <p>Good energy, but it can imply broader automation or repeated run behavior.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Implementation Tokens</h2>
+      <table class="token-table">
+        <thead>
+          <tr>
+            <th>Use</th>
+            <th>Value</th>
+            <th>Current Match</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>App name</td>
+            <td><code>KeyHold</code></td>
+            <td>Window title, tray copy, docs, namespace, and assembly already match.</td>
+          </tr>
+          <tr>
+            <td>Idle accent</td>
+            <td><code>#35A7FF</code></td>
+            <td>Used in dark theme and idle tray icon.</td>
+          </tr>
+          <tr>
+            <td>Active accent</td>
+            <td><code>#58D68D</code></td>
+            <td>Used in active tray icon. Use only for active hold state.</td>
+          </tr>
+          <tr>
+            <td>Dark surface</td>
+            <td><code>#101318</code>, <code>#171B22</code></td>
+            <td>Used in current WPF theme.</td>
+          </tr>
+          <tr>
+            <td>Product line</td>
+            <td>Held-key utility for single-player Windows gaming</td>
+            <td>Used in the main window and consistent with the security posture.</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   </main>
 </body>
 </html>
-

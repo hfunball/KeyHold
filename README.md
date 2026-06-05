@@ -2,7 +2,7 @@
 
 KeyHold is a small Windows 11 tray utility for single-player games. It captures the keyboard keys you are physically holding when you activate it, keeps those keys held with synthetic input, and releases them when you stop.
 
-The working product names are KeyHold and KeyRun. The current implementation uses KeyHold in code while the brand work compares KeyLatch, KeyRun, and PressLatch.
+The beta product name is KeyHold. The early brand board keeps KeyLatch as a backup route and parks KeyRun and PressLatch for now.
 
 ## Beta Scope
 
@@ -35,4 +35,3 @@ dotnet run --project src/KeyHold
 KeyHold monitors keyboard state and injects keyboard input, so it is treated as security-sensitive. It does not include networking, telemetry, credential capture, macro recording, or raw typed-text logging.
 
 See [docs/security/threat-model.md](docs/security/threat-model.md) and [docs/security/security-plan.md](docs/security/security-plan.md).
-
