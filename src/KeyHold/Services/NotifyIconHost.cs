@@ -67,24 +67,14 @@ public sealed class NotifyIconHost : IDisposable
         using var bgBrush = new SolidBrush(Color.FromArgb(0x17, 0x1B, 0x22));
         using var accentBrush = new SolidBrush(accent);
         using var keyBrush = new SolidBrush(Color.White);
-        using var keyFaceBrush = new SolidBrush(Color.FromArgb(0xED, 0xF2, 0xF7));
-        using var keyTextBrush = new SolidBrush(Color.FromArgb(0x17, 0x1B, 0x22));
         using var textBrush = new SolidBrush(Color.White);
         using var pen = new Pen(accent, 2.4f);
-        using var keyFont = new Font("Segoe UI", 7.5f, FontStyle.Bold, GraphicsUnit.Pixel);
-        using var textFormat = new StringFormat
-        {
-            Alignment = StringAlignment.Center,
-            LineAlignment = StringAlignment.Center
-        };
 
         graphics.FillRoundedRectangle(bgBrush, new RectangleF(2, 2, 28, 28), 7);
         graphics.DrawRoundedRectangle(pen, new RectangleF(3.5f, 3.5f, 25, 25), 6);
         graphics.FillRoundedRectangle(accentBrush, new RectangleF(8, 10, 14, 5), 2);
         graphics.FillRoundedRectangle(accentBrush, new RectangleF(19, 13, 5, 10), 2);
         graphics.FillRoundedRectangle(keyBrush, new RectangleF(8, 18, 13, 10), 3);
-        graphics.FillRoundedRectangle(keyFaceBrush, new RectangleF(10, 20, 9, 6), 2);
-        graphics.DrawString("K", keyFont, keyTextBrush, new RectangleF(8, 18, 13, 10), textFormat);
 
         if (active)
         {
