@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KeyHold Splash Screen Options</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0d1015;
+      color: #f5f7fa;
+      --bg: #101318;
+      --panel: #171b22;
+      --panel-2: #1d232c;
+      --key: #242932;
+      --shadow: #101318;
+      --text: #f5f7fa;
+      --muted: #a9b2c3;
+      --border: #29313d;
+      --accent: #35a7ff;
+      --active: #58d68d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px;
+      background:
+        linear-gradient(135deg, rgb(53 167 255 / 9%), transparent 34%),
+        #0d1015;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 34px;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      max-width: 820px;
+      color: var(--muted);
+      line-height: 1.46;
+      margin-bottom: 0;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .option {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .option h2 {
+      font-size: 17px;
+      margin-bottom: 0;
+    }
+
+    .desktop {
+      position: relative;
+      min-height: 300px;
+      overflow: hidden;
+      border: 1px solid #222b36;
+      border-radius: 8px;
+      background:
+        linear-gradient(160deg, #151a22, #0b0e13 68%),
+        #0b0e13;
+    }
+
+    .taskbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 38px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      background: rgb(9 12 17 / 92%);
+      border-top: 1px solid #202833;
+      color: #8792a3;
+      font-size: 11px;
+    }
+
+    .clock {
+      line-height: 1.15;
+      text-align: right;
+    }
+
+    .tray-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1px solid #29313d;
+      display: grid;
+      place-items: center;
+      background: #171b22;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+    }
+
+    .logo.small {
+      width: 18px;
+      height: 18px;
+    }
+
+    .splash {
+      position: absolute;
+      border: 1px solid var(--border);
+      background: rgb(23 27 34 / 96%);
+      box-shadow: 0 18px 45px rgb(0 0 0 / 34%);
+      color: var(--text);
+    }
+
+    .splash p {
+      color: var(--muted);
+      line-height: 1.42;
+      margin-bottom: 0;
+    }
+
+    .splash strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .progress {
+      height: 3px;
+      background: #26303d;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      width: 72%;
+      height: 100%;
+      background: var(--accent);
+      border-radius: inherit;
+    }
+
+    .toast {
+      right: 16px;
+      bottom: 54px;
+      width: 360px;
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .toast .progress {
+      grid-column: 1 / -1;
+    }
+
+    .center-card {
+      left: 50%;
+      top: 45%;
+      width: 390px;
+      transform: translate(-50%, -50%);
+      border-radius: 8px;
+      padding: 22px;
+      text-align: center;
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .center-card strong {
+      font-size: 23px;
+    }
+
+    .banner {
+      left: 50%;
+      bottom: 58px;
+      width: min(560px, calc(100% - 32px));
+      transform: translateX(-50%);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .banner .progress {
+      grid-column: 1 / -1;
+    }
+
+    .callout {
+      right: 16px;
+      bottom: 54px;
+      width: 345px;
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .callout-top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .callout-line {
+      width: 64px;
+      height: 1px;
+      justify-self: end;
+      background: var(--accent);
+      transform: translate(8px, 8px) rotate(18deg);
+      transform-origin: right center;
+    }
+
+    .notes {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+      margin-bottom: 0;
+    }
+
+    code {
+      color: var(--text);
+      font-family: Consolas, monospace;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        padding: 18px;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <h1>KeyHold Splash Screen Options</h1>
+      <p class="intro">Four first-run splash directions. Each one uses the selected KH keycap logo, dark brand colors, and an auto-dismiss progress cue for the three-second close.</p>
+    </section>
+
+    <section class="options">
+      <article class="option">
+        <h2>Option A: Tray Toast</h2>
+        <div class="desktop">
+          <div class="splash toast">
+            <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#29313d" stroke-width="2"/>
+              <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+              <path d="M18 42h28l-4 7H22z" fill="#101318"/>
+              <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+              <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+            </svg>
+            <div>
+              <strong>KeyHold is running</strong>
+              <p>Use the tray icon near the clock to open the app, release keys, or exit.</p>
+            </div>
+            <div class="progress"><span></span></div>
+          </div>
+          <div class="taskbar">
+            <div class="tray-dot">
+              <svg class="logo small" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+                <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+                <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+              </svg>
+            </div>
+            <div class="clock">2:41<br>PM</div>
+          </div>
+        </div>
+        <p class="notes">Closest to a Windows notification without using the notification system. Small, clear, and easy to implement as a borderless WPF window.</p>
+      </article>
+
+      <article class="option">
+        <h2>Option B: Center Splash</h2>
+        <div class="desktop">
+          <div class="splash center-card">
+            <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#29313d" stroke-width="2"/>
+              <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+              <path d="M18 42h28l-4 7H22z" fill="#101318"/>
+              <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+              <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+            </svg>
+            <div>
+              <strong>KeyHold started</strong>
+              <p>It will stay available from the taskbar notification area.</p>
+            </div>
+            <div class="progress"><span></span></div>
+          </div>
+          <div class="taskbar">
+            <div class="tray-dot"></div>
+            <div class="clock">2:41<br>PM</div>
+          </div>
+        </div>
+        <p class="notes">Most unmistakable on first run. Slightly more interruptive because it appears in the middle of the screen.</p>
+      </article>
+
+      <article class="option">
+        <h2>Option C: Bottom Banner</h2>
+        <div class="desktop">
+          <div class="splash banner">
+            <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#29313d" stroke-width="2"/>
+              <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+              <path d="M18 42h28l-4 7H22z" fill="#101318"/>
+              <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+              <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+            </svg>
+            <div>
+              <strong>KeyHold is ready in the notification area</strong>
+              <p>Open it from the tray icon near the clock.</p>
+            </div>
+            <div class="progress"><span></span></div>
+          </div>
+          <div class="taskbar">
+            <div class="tray-dot"></div>
+            <div class="clock">2:41<br>PM</div>
+          </div>
+        </div>
+        <p class="notes">Least modal feeling. It reads like status, but the line length is wider than the app probably needs.</p>
+      </article>
+
+      <article class="option">
+        <h2>Option D: Tray Pointer</h2>
+        <div class="desktop">
+          <div class="splash callout">
+            <div class="callout-top">
+              <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="5" y="5" width="54" height="54" rx="12" fill="#171b22" stroke="#29313d" stroke-width="2"/>
+                <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+                <path d="M18 42h28l-4 7H22z" fill="#101318"/>
+                <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+                <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+              </svg>
+              <div>
+                <strong>KeyHold started in the tray</strong>
+                <p>Look near the clock for the KeyHold icon.</p>
+              </div>
+            </div>
+            <div class="callout-line"></div>
+            <div class="progress"><span></span></div>
+          </div>
+          <div class="taskbar">
+            <div class="tray-dot">
+              <svg class="logo small" viewBox="0 0 64 64" aria-hidden="true">
+                <rect x="16" y="15" width="32" height="34" rx="8" fill="#242932"/>
+                <rect x="18" y="43" width="28" height="7" rx="3" fill="#35a7ff"/>
+                <rect x="23" y="28" width="18" height="5" rx="2.5" fill="#f5f7fa"/>
+              </svg>
+            </div>
+            <div class="clock">2:41<br>PM</div>
+          </div>
+        </div>
+        <p class="notes">Best teaching moment. The pointer is useful on first run, but a little more visually busy than Option A.</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

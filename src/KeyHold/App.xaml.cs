@@ -30,7 +30,6 @@ public partial class App
         mainWindow = new MainWindow(settings, config, engine, new StartupService());
         if (isFirstRun)
         {
-            mainWindow.ShowFirstRunNotice();
             settings.HasSeenFirstRun = true;
             try
             {
@@ -60,8 +59,14 @@ public partial class App
             Dispatcher.Invoke(() => mainWindow?.AddDiagnostic(entry));
         };
 
-        if (!isFirstRun && settings.LaunchToTray)
+        if (settings.LaunchToTray)
         {
+            if (isFirstRun)
+            {
+                var splash = new StartupSplashWindow();
+                splash.Show();
+            }
+
             mainWindow.Hide();
             return;
         }

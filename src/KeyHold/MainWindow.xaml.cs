@@ -52,12 +52,6 @@ public partial class MainWindow
         }
     }
 
-    public void ShowFirstRunNotice()
-    {
-        FirstRunNotice.Visibility = Visibility.Visible;
-        AddDiagnostic(new DiagnosticEntry(DateTime.Now, "First run: KeyHold opened the main window instead of starting hidden in the tray."));
-    }
-
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
         if (allowClose)
