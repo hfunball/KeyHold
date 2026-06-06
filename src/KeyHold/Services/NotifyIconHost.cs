@@ -19,8 +19,8 @@ public sealed class NotifyIconHost : IDisposable
         this.engine = engine;
         this.showWindow = showWindow;
         this.exitApplication = exitApplication;
-        idleIcon = CreateIcon(Color.FromArgb(0x35, 0xA7, 0xFF), false);
-        activeIcon = CreateIcon(Color.FromArgb(0x58, 0xD6, 0x8D), true);
+        idleIcon = CreateIcon(active: false);
+        activeIcon = CreateIcon(active: true);
 
         notifyIcon = new NotifyIcon
         {
@@ -64,36 +64,36 @@ public sealed class NotifyIconHost : IDisposable
         return menu;
     }
 
-    private static Icon CreateIcon(Color accent, bool active)
+    private static Icon CreateIcon(bool active)
     {
         using var bitmap = new Bitmap(32, 32);
         using var graphics = Graphics.FromImage(bitmap);
         graphics.Clear(Color.Transparent);
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
+        var borderColor = active ? Color.FromArgb(0x03, 0x04, 0x06) : Color.FromArgb(0x35, 0xA7, 0xFF);
+        var keyColor = active ? Color.FromArgb(0x35, 0xA7, 0xFF) : Color.FromArgb(0x24, 0x29, 0x32);
+        var keySideColor = active ? Color.FromArgb(0x1F, 0x8B, 0xF4) : Color.FromArgb(0x10, 0x13, 0x18);
+        var railColor = active ? Color.FromArgb(0x03, 0x04, 0x06) : Color.FromArgb(0x35, 0xA7, 0xFF);
+
         using var bgBrush = new SolidBrush(Color.FromArgb(0x17, 0x1B, 0x22));
-        using var accentBrush = new SolidBrush(accent);
-        using var keyBrush = new SolidBrush(Color.FromArgb(0x24, 0x29, 0x32));
-        using var keyShadowBrush = new SolidBrush(Color.FromArgb(0x10, 0x13, 0x18));
+        using var keyBrush = new SolidBrush(keyColor);
+        using var keySideBrush = new SolidBrush(keySideColor);
+        using var railBrush = new SolidBrush(railColor);
         using var textBrush = new SolidBrush(Color.White);
-        using var pen = new Pen(accent, 2.4f);
+        using var pen = new Pen(borderColor, 2.4f);
 
         graphics.FillRoundedRectangle(bgBrush, new RectangleF(2, 2, 28, 28), 7);
         graphics.DrawRoundedRectangle(pen, new RectangleF(3.5f, 3.5f, 25, 25), 6);
         graphics.FillRoundedRectangle(keyBrush, new RectangleF(8, 7, 16, 18), 4);
-        graphics.FillPolygon(keyShadowBrush, [
+        graphics.FillPolygon(keySideBrush, [
             new PointF(9, 20),
             new PointF(23, 20),
-            new PointF(21, 25),
-            new PointF(11, 25)
+            new PointF(21, 24),
+            new PointF(11, 24)
         ]);
-        graphics.FillRoundedRectangle(accentBrush, new RectangleF(9, 23, 14, 4), 2);
+        graphics.FillRoundedRectangle(railBrush, new RectangleF(9, 22.5f, 14, 4.8f), 2.4f);
         graphics.FillRoundedRectangle(textBrush, new RectangleF(12, 14, 8, 2.5f), 1.25f);
-
-        if (active)
-        {
-            graphics.FillEllipse(textBrush, 23, 23, 3, 3);
-        }
 
         var handle = bitmap.GetHicon();
         try
