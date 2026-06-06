@@ -4,8 +4,6 @@ namespace KeyHold.Services;
 
 public sealed class KeyHoldEngine : IDisposable
 {
-    private const int DefaultRepeatedPressIntervalMilliseconds = 45;
-
     private readonly object gate = new();
     private readonly IInputSender inputSender;
     private readonly HashSet<int> physicalKeysDown = [];
@@ -13,7 +11,6 @@ public sealed class KeyHoldEngine : IDisposable
     private readonly HashSet<int> releasedHeldKeys = [];
     private readonly HashSet<int> handoffReadyKeys = [];
     private AppSettings settings;
-    private System.Threading.Timer? repeatTimer;
     private bool disposed;
     private bool uiCaptureActive;
 
@@ -35,7 +32,6 @@ public sealed class KeyHoldEngine : IDisposable
         lock (gate)
         {
             settings = newSettings;
-            UpdateRepeatTimerLocked();
         }
 
         Log("Settings updated.");
@@ -72,15 +68,10 @@ public sealed class KeyHoldEngine : IDisposable
 
             if (input.IsDown)
             {
-                if (IsEnableTrigger(input.VirtualKey))
+                if (IsToggleTrigger(input.VirtualKey))
                 {
-                    ActivateOrToggleLocked();
-                    suppress = settings.SuppressTriggerInput;
-                }
-                else if (IsStopTrigger(input.VirtualKey))
-                {
-                    ReleaseAllLocked("Stop hotkey", allowPhysicalHandoff: true);
-                    suppress = settings.SuppressTriggerInput;
+                    ActivateOrReleaseLocked();
+                    suppress = true;
                 }
                 else
                 {
@@ -90,9 +81,9 @@ public sealed class KeyHoldEngine : IDisposable
             }
             else
             {
-                if (IsAnyKeyboardTrigger(input.VirtualKey))
+                if (IsToggleTrigger(input.VirtualKey))
                 {
-                    suppress = settings.SuppressTriggerInput;
+                    suppress = true;
                 }
                 else
                 {
@@ -104,10 +95,7 @@ public sealed class KeyHoldEngine : IDisposable
                     releasedHeldKeys.Add(input.VirtualKey);
                     handoffReadyKeys.Remove(input.VirtualKey);
                     suppress = true;
-                    if (settings.KeyEmulationMode == KeyEmulationMode.StableHold)
-                    {
-                        inputSender.SendKeyDown(input.VirtualKey);
-                    }
+                    inputSender.SendKeyDown(input.VirtualKey);
                 }
             }
 
@@ -115,30 +103,6 @@ public sealed class KeyHoldEngine : IDisposable
         }
 
         return suppress;
-    }
-
-    public bool HandleMouseEvent(MouseInputEvent input)
-    {
-        if (input.IsInjected || !settings.MouseTrigger.MatchesMouse(input.Button))
-        {
-            return false;
-        }
-
-        lock (gate)
-        {
-            if (uiCaptureActive)
-            {
-                return false;
-            }
-
-            if (input.IsDown && settings.ActivationMode == ActivationMode.MouseTrigger)
-            {
-                ActivateOrToggleLocked();
-            }
-
-            LogLocked($"{(input.IsDown ? "Mouse down" : "Mouse up")}: {input.Button}");
-            return settings.SuppressTriggerInput;
-        }
     }
 
     public void ReleaseAll(string reason)
@@ -159,26 +123,20 @@ public sealed class KeyHoldEngine : IDisposable
             }
 
             ReleaseAllLocked("Engine dispose", allowPhysicalHandoff: false);
-            StopRepeatTimerLocked();
             disposed = true;
         }
     }
 
-    private void ActivateOrToggleLocked()
+    private void ActivateOrReleaseLocked()
     {
-        if ((settings.ActivationMode == ActivationMode.Toggle || settings.ActivationMode == ActivationMode.MouseTrigger) && heldKeys.Count > 0)
+        if (heldKeys.Count > 0)
         {
             ReleaseAllLocked("Toggle release", allowPhysicalHandoff: true);
             return;
         }
 
-        if (heldKeys.Count > 0)
-        {
-            ReleaseAllLocked("New hold started", allowPhysicalHandoff: true);
-        }
-
         var snapshot = physicalKeysDown
-            .Where(key => !IsAnyKeyboardTrigger(key))
+            .Where(key => !IsToggleTrigger(key))
             .OrderBy(key => key)
             .ToArray();
 
@@ -197,7 +155,6 @@ public sealed class KeyHoldEngine : IDisposable
             heldKeys.Add(key);
         }
 
-        UpdateRepeatTimerLocked();
         PublishStatusLocked("Hold active");
         LogLocked($"Holding {string.Join(", ", snapshot.Select(VirtualKeyNames.GetName))}.");
     }
@@ -227,7 +184,6 @@ public sealed class KeyHoldEngine : IDisposable
 
     private void ReleaseAllLocked(string reason, bool allowPhysicalHandoff)
     {
-        StopRepeatTimerLocked();
         if (heldKeys.Count == 0)
         {
             releasedHeldKeys.Clear();
@@ -263,71 +219,9 @@ public sealed class KeyHoldEngine : IDisposable
         }
     }
 
-    private void UpdateRepeatTimerLocked()
+    private bool IsToggleTrigger(int virtualKey)
     {
-        StopRepeatTimerLocked();
-        if (heldKeys.Count > 0 && settings.KeyEmulationMode == KeyEmulationMode.RepeatedPress)
-        {
-            StartRepeatTimerLocked();
-        }
-    }
-
-    private void StartRepeatTimerLocked()
-    {
-        var milliseconds = settings.RepeatedPressIntervalMilliseconds > 0
-            ? settings.RepeatedPressIntervalMilliseconds
-            : DefaultRepeatedPressIntervalMilliseconds;
-        var interval = TimeSpan.FromMilliseconds(milliseconds);
-        repeatTimer ??= new System.Threading.Timer(_ => RepeatHeldKeys(), null, interval, interval);
-    }
-
-    private void StopRepeatTimerLocked()
-    {
-        repeatTimer?.Dispose();
-        repeatTimer = null;
-    }
-
-    private void RepeatHeldKeys()
-    {
-        lock (gate)
-        {
-            if (disposed || heldKeys.Count == 0 || settings.KeyEmulationMode != KeyEmulationMode.RepeatedPress)
-            {
-                return;
-            }
-
-            foreach (var key in heldKeys.OrderBy(key => key))
-            {
-                inputSender.SendKeyUp(key);
-                inputSender.SendKeyDown(key);
-            }
-        }
-    }
-
-    private bool IsEnableTrigger(int virtualKey)
-    {
-        return settings.ActivationMode switch
-        {
-            ActivationMode.SeparateKeys => settings.EnableBinding.MatchesKeyboard(virtualKey),
-            ActivationMode.Toggle => settings.EnableBinding.MatchesKeyboard(virtualKey),
-            _ => false
-        };
-    }
-
-    private bool IsStopTrigger(int virtualKey)
-    {
-        return settings.ActivationMode == ActivationMode.SeparateKeys && settings.StopBinding.MatchesKeyboard(virtualKey);
-    }
-
-    private bool IsAnyKeyboardTrigger(int virtualKey)
-    {
-        return settings.ActivationMode switch
-        {
-            ActivationMode.SeparateKeys => settings.EnableBinding.MatchesKeyboard(virtualKey)
-                || settings.StopBinding.MatchesKeyboard(virtualKey),
-            ActivationMode.Toggle => settings.EnableBinding.MatchesKeyboard(virtualKey),
-            _ => false
-        };
+        return settings.ToggleBinding.MatchesKeyboard(virtualKey);
     }
 
     private void PublishStatusLocked(string reason)

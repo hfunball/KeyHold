@@ -5,12 +5,9 @@ using System.Windows.Threading;
 using KeyHold.Models;
 using KeyHold.Services;
 using AppInputBinding = KeyHold.Models.InputBinding;
-using AppThemeMode = KeyHold.Models.ThemeMode;
-using WpfButton = System.Windows.Controls.Button;
 using WpfComboBox = System.Windows.Controls.ComboBox;
 using WpfComboBoxItem = System.Windows.Controls.ComboBoxItem;
 using WpfKeyEventArgs = System.Windows.Input.KeyEventArgs;
-using WpfTextBox = System.Windows.Controls.TextBox;
 
 namespace KeyHold;
 
@@ -20,7 +17,7 @@ public partial class MainWindow
     private readonly KeyHoldEngine engine;
     private readonly IStartupService startupService;
     private AppSettings settings;
-    private BindingTarget? captureTarget;
+    private bool isCapturingToggle;
     private bool isLoading;
     private bool allowClose;
     private bool startupEnabled;
@@ -63,7 +60,7 @@ public partial class MainWindow
             return;
         }
 
-        captureTarget = null;
+        isCapturingToggle = false;
         engine.SetUiCaptureActive(false);
         e.Cancel = true;
         Hide();
@@ -77,7 +74,7 @@ public partial class MainWindow
     protected override void OnDeactivated(EventArgs e)
     {
         base.OnDeactivated(e);
-        if (captureTarget is null)
+        if (!isCapturingToggle)
         {
             return;
         }
@@ -89,7 +86,7 @@ public partial class MainWindow
     {
         base.OnPreviewKeyDown(e);
 
-        if (captureTarget is null)
+        if (!isCapturingToggle)
         {
             return;
         }
@@ -101,12 +98,8 @@ public partial class MainWindow
     private void LoadSettingsToUi()
     {
         isLoading = true;
-        SetComboSelection(ActivationModeBox, settings.ActivationMode.ToString());
         SetComboSelection(ThemeBox, settings.Theme.ToString());
-        SetComboSelection(MouseBindingBox, settings.MouseTrigger.Code.ToString());
-        EnableBindingText.Text = settings.EnableBinding.DisplayName;
-        StopBindingText.Text = settings.StopBinding.DisplayName;
-        SuppressTriggersBox.IsChecked = settings.SuppressTriggerInput;
+        ToggleBindingText.Text = settings.ToggleBinding.DisplayName;
         startupEnabled = TryReadStartupEnabled();
         StartupBox.IsChecked = startupEnabled;
         LaunchToTrayBox.IsChecked = settings.LaunchToTray;
@@ -124,10 +117,7 @@ public partial class MainWindow
 
         try
         {
-            settings.ActivationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
             settings.Theme = GetSelectedEnumOrCurrent(ThemeBox, settings.Theme);
-            settings.MouseTrigger = AppInputBinding.Mouse(GetSelectedMouseTriggerOrCurrent());
-            settings.SuppressTriggerInput = SuppressTriggersBox.IsChecked == true;
             settings.LaunchToTray = LaunchToTrayBox.IsChecked == true;
             settings.ShowNotifications = NotificationsBox.IsChecked == true;
 
@@ -174,14 +164,6 @@ public partial class MainWindow
         return TryGetSelectedTag(box, out var tag) && Enum.TryParse<TEnum>(tag, out var selectedValue)
             ? selectedValue
             : currentValue;
-    }
-
-    private MouseTriggerCode GetSelectedMouseTriggerOrCurrent()
-    {
-        var current = Enum.IsDefined(typeof(MouseTriggerCode), settings.MouseTrigger.Code)
-            ? (MouseTriggerCode)settings.MouseTrigger.Code
-            : MouseTriggerCode.XButton1;
-        return GetSelectedEnumOrCurrent(MouseBindingBox, current);
     }
 
     private System.Windows.Media.Brush FindBrush(string resourceKey)
@@ -234,33 +216,22 @@ public partial class MainWindow
         Hide();
     }
 
-    private void CaptureEnable_Click(object sender, RoutedEventArgs e)
+    private void CaptureToggle_Click(object sender, RoutedEventArgs e)
     {
-        BeginCapture(BindingTarget.Enable);
+        BeginCapture();
     }
 
-    private void CaptureStop_Click(object sender, RoutedEventArgs e)
+    private void BeginCapture()
     {
-        BeginCapture(BindingTarget.Stop);
-    }
-
-    private void BeginCapture(BindingTarget target)
-    {
-        if (!IsCaptureTargetAvailable(target))
-        {
-            return;
-        }
-
-        captureTarget = target;
+        isCapturingToggle = true;
         engine.SetUiCaptureActive(true);
         UpdateBindingUi();
-        AddDiagnostic(new DiagnosticEntry(DateTime.Now, $"Press a key to set {GetBindingTargetName(target).ToLowerInvariant()}."));
+        AddDiagnostic(new DiagnosticEntry(DateTime.Now, "Press a key to set toggle key."));
         Activate();
         Dispatcher.InvokeAsync(() =>
         {
-            var targetBox = GetBindingTextBox(target);
-            targetBox.Focus();
-            Keyboard.Focus(targetBox);
+            ToggleBindingText.Focus();
+            Keyboard.Focus(ToggleBindingText);
         }, DispatcherPriority.Input);
     }
 
@@ -271,32 +242,23 @@ public partial class MainWindow
 
     private void CompleteKeyCapture(int virtualKey)
     {
-        if (captureTarget is not { } target || virtualKey == 0)
+        if (!isCapturingToggle || virtualKey == 0)
         {
             return;
         }
 
         var binding = AppInputBinding.Keyboard(virtualKey);
-        switch (target)
-        {
-            case BindingTarget.Enable:
-                settings.EnableBinding = binding;
-                break;
-            case BindingTarget.Stop:
-                settings.StopBinding = binding;
-                break;
-        }
-
-        captureTarget = null;
+        settings.ToggleBinding = binding;
+        isCapturingToggle = false;
         engine.SetUiCaptureActive(false);
         SaveSettingsFromUi();
         LoadSettingsToUi();
-        AddDiagnostic(new DiagnosticEntry(DateTime.Now, $"Set {GetBindingTargetName(target).ToLowerInvariant()} to {binding.DisplayName}."));
+        AddDiagnostic(new DiagnosticEntry(DateTime.Now, $"Set toggle key to {binding.DisplayName}."));
     }
 
     private void CancelCapture(string message)
     {
-        captureTarget = null;
+        isCapturingToggle = false;
         engine.SetUiCaptureActive(false);
         UpdateBindingUi();
         AddDiagnostic(new DiagnosticEntry(DateTime.Now, message));
@@ -304,68 +266,12 @@ public partial class MainWindow
 
     private void UpdateBindingUi()
     {
-        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
-        var isToggle = activationMode == ActivationMode.Toggle;
-        var isSeparateKeys = activationMode == ActivationMode.SeparateKeys;
-        var isMouseTrigger = activationMode == ActivationMode.MouseTrigger;
-
-        EnableBindingPanel.Visibility = isMouseTrigger ? Visibility.Collapsed : Visibility.Visible;
-        StopBindingPanel.Visibility = isSeparateKeys ? Visibility.Visible : Visibility.Collapsed;
-        MouseBindingPanel.Visibility = isMouseTrigger ? Visibility.Visible : Visibility.Collapsed;
-
-        EnableBindingLabel.Text = isToggle ? "Toggle key" : "Enable key";
-        SetCaptureControlState(BindingTarget.Enable, EnableBindingText, CaptureEnableButton, settings.EnableBinding.DisplayName);
-        SetCaptureControlState(BindingTarget.Stop, StopBindingText, CaptureStopButton, settings.StopBinding.DisplayName);
-    }
-
-    private void SetCaptureControlState(BindingTarget target, WpfTextBox textBox, WpfButton button, string bindingName)
-    {
-        var isCapturing = captureTarget == target;
-        textBox.Text = isCapturing ? "Press a key..." : bindingName;
-        button.Content = isCapturing ? "Listening..." : $"Set {GetBindingTargetName(target)}";
-    }
-
-    private string GetBindingTargetName(BindingTarget target)
-    {
-        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
-        return target switch
-        {
-            BindingTarget.Enable when activationMode == ActivationMode.Toggle => "Toggle Key",
-            BindingTarget.Enable => "Enable Key",
-            BindingTarget.Stop => "Stop Key",
-            _ => "Key"
-        };
-    }
-
-    private bool IsCaptureTargetAvailable(BindingTarget target)
-    {
-        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
-        return target switch
-        {
-            BindingTarget.Enable => activationMode != ActivationMode.MouseTrigger,
-            BindingTarget.Stop => activationMode == ActivationMode.SeparateKeys,
-            _ => false
-        };
-    }
-
-    private WpfTextBox GetBindingTextBox(BindingTarget target)
-    {
-        return target switch
-        {
-            BindingTarget.Enable => EnableBindingText,
-            BindingTarget.Stop => StopBindingText,
-            _ => EnableBindingText
-        };
+        ToggleBindingText.Text = isCapturingToggle ? "Press a key..." : settings.ToggleBinding.DisplayName;
+        CaptureToggleButton.Content = isCapturingToggle ? "Listening..." : "Set Toggle Key";
     }
 
     private void SettingChanged(object sender, RoutedEventArgs e)
     {
         SaveSettingsFromUi();
-    }
-
-    private enum BindingTarget
-    {
-        Enable,
-        Stop
     }
 }

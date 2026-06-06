@@ -8,7 +8,7 @@ The beta product name is KeyHold. The early brand board keeps KeyLatch as a back
 
 - Keyboard hold only.
 - Beta target: stable hold for up to three captured keyboard keys.
-- Keyboard or mouse buttons can activate and stop a hold.
+- A single keyboard toggle activates and stops a hold.
 - No macro recording or playback in 1.0.
 - No stealth behavior, multiplayer advantage, anti-cheat bypassing, or hidden automation.
 - Dark and light UI themes.

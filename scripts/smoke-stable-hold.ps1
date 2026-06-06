@@ -79,16 +79,10 @@ $homeKey = [byte]0x24
 try {
     New-Item -ItemType Directory -Path $settingsFolder -Force | Out-Null
     $testSettings = @{
-        ActivationMode = 1
-        EnableBinding = @{ Device = 0; Code = 36; DisplayName = 'Home' }
-        StopBinding = @{ Device = 0; Code = 34; DisplayName = 'Page Down' }
-        MouseTrigger = @{ Device = 1; Code = 1; DisplayName = 'Mouse Button 4' }
-        KeyEmulationMode = 0
-        RepeatedPressIntervalMilliseconds = 45
+        ToggleBinding = @{ Device = 0; Code = 36; DisplayName = 'Home' }
         Theme = 0
         LaunchToTray = $false
         ShowNotifications = $false
-        SuppressTriggerInput = $true
         HasSeenFirstRun = $true
     } | ConvertTo-Json -Depth 4
     [System.IO.File]::WriteAllText($settingsPath, $testSettings)

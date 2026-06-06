@@ -255,70 +255,17 @@
             </TabItem>
 
             <TabItem Header="Bindings">
-                <Grid Margin="14" Background="{DynamicResource AppBackgroundBrush}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.ColumnSpan="2">
-                        <TextBlock Text="Activation mode" FontWeight="SemiBold" />
-                        <ComboBox x:Name="ActivationModeBox" SelectionChanged="SettingChanged">
-                            <ComboBoxItem Content="Separate enable and stop keys" Tag="SeparateKeys" />
-                            <ComboBoxItem Content="Single toggle key" Tag="Toggle" />
-                            <ComboBoxItem Content="Mouse trigger" Tag="MouseTrigger" />
-                        </ComboBox>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="1"
-                                Grid.Column="0"
-                                x:Name="EnableBindingPanel"
-                                Margin="0,16,10,0">
-                        <TextBlock x:Name="EnableBindingLabel" Text="Enable key" FontWeight="SemiBold" />
-                        <TextBox x:Name="EnableBindingText" IsReadOnly="True" Focusable="True" />
-                        <Button x:Name="CaptureEnableButton"
-                                Content="Set Enable Key"
-                                Margin="0,8,8,0"
-                                Click="CaptureEnable_Click" />
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="1"
-                                Grid.Column="1"
-                                x:Name="StopBindingPanel"
-                                Margin="10,16,0,0">
-                        <TextBlock Text="Stop key" FontWeight="SemiBold" />
-                        <TextBox x:Name="StopBindingText" IsReadOnly="True" Focusable="True" />
-                        <Button x:Name="CaptureStopButton"
-                                Content="Set Stop Key"
-                                Margin="0,8,8,0"
-                                Click="CaptureStop_Click" />
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2"
-                                Grid.Column="0"
-                                x:Name="MouseBindingPanel"
-                                Margin="0,16,10,0">
-                        <TextBlock Text="Mouse trigger" FontWeight="SemiBold" />
-                        <ComboBox x:Name="MouseBindingBox" SelectionChanged="SettingChanged">
-                            <ComboBoxItem Content="Mouse Button 4" Tag="XButton1" />
-                            <ComboBoxItem Content="Mouse Button 5" Tag="XButton2" />
-                            <ComboBoxItem Content="Middle Mouse" Tag="Middle" />
-                        </ComboBox>
-                    </StackPanel>
-
-                    <CheckBox Grid.Row="3"
-                              Grid.ColumnSpan="2"
-                              x:Name="SuppressTriggersBox"
-                              Content="Suppress trigger key or mouse button so the game does not see it"
-                              Checked="SettingChanged"
-                              Unchecked="SettingChanged" />
-                </Grid>
+                <StackPanel Margin="14"
+                            Background="{DynamicResource AppBackgroundBrush}"
+                            MaxWidth="420"
+                            HorizontalAlignment="Left">
+                    <TextBlock Text="Toggle key" FontWeight="SemiBold" />
+                    <TextBox x:Name="ToggleBindingText" IsReadOnly="True" Focusable="True" />
+                    <Button x:Name="CaptureToggleButton"
+                            Content="Set Toggle Key"
+                            Margin="0,8,8,0"
+                            Click="CaptureToggle_Click" />
+                </StackPanel>
             </TabItem>
 
             <TabItem Header="Settings">

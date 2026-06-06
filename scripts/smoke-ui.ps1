@@ -65,30 +65,6 @@ function Get-EditValues {
     return $values
 }
 
-function Get-ComboBoxes {
-    param([System.Windows.Automation.AutomationElement]$Root)
-
-    $condition = New-Object System.Windows.Automation.PropertyCondition `
-        -ArgumentList ([System.Windows.Automation.AutomationElement]::ControlTypeProperty), ([System.Windows.Automation.ControlType]::ComboBox)
-    return $Root.FindAll([System.Windows.Automation.TreeScope]::Descendants, $condition)
-}
-
-function Select-ComboBoxItem {
-    param(
-        [System.Windows.Automation.AutomationElement]$Root,
-        [System.Windows.Automation.AutomationElement]$ComboBox,
-        [string]$Name
-    )
-
-    $expand = $ComboBox.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern)
-    $expand.Expand()
-    Start-Sleep -Milliseconds 250
-
-    $ComboBox.SetFocus()
-    [System.Windows.Forms.SendKeys]::SendWait('{DOWN}{ENTER}')
-    Start-Sleep -Milliseconds 250
-}
-
 function Assert-DarkWindow {
     param([System.Windows.Automation.AutomationElement]$Window)
 
@@ -191,14 +167,10 @@ $process = $null
 try {
     New-Item -ItemType Directory -Path $settingsFolder -Force | Out-Null
     $testSettings = @{
-        ActivationMode = 0
-        EnableBinding = @{ Device = 0; Code = 33; DisplayName = 'Page Up' }
-        StopBinding = @{ Device = 0; Code = 34; DisplayName = 'Page Down' }
-        MouseTrigger = @{ Device = 1; Code = 1; DisplayName = 'Mouse Button 4' }
+        ToggleBinding = @{ Device = 0; Code = 36; DisplayName = 'Home' }
         Theme = 0
         LaunchToTray = $false
         ShowNotifications = $false
-        SuppressTriggerInput = $true
         HasSeenFirstRun = $true
     } | ConvertTo-Json -Depth 4
     [System.IO.File]::WriteAllText($settingsPath, $testSettings)
@@ -216,27 +188,10 @@ try {
     $selection.Select()
     Assert-DarkControlInterior -Control $bindingsTab -Description 'Selected Bindings tab'
 
-    $activationModeBox = Wait-For {
-        $comboBoxes = Get-ComboBoxes -Root $window
-        if ($comboBoxes.Count -gt 0) {
-            return $comboBoxes[0]
-        }
-
-        return $null
-    } 'the activation mode combo box'
-    Assert-DarkControlInterior -Control $activationModeBox -Description 'Activation mode combo box'
-
-    Select-ComboBoxItem -Root $root -ComboBox $activationModeBox -Name 'Single toggle key'
-
     $setToggleButton = Wait-For { Find-ByName -Root $window -Name 'Set Toggle Key' } 'the Set Toggle Key button'
-    $setStopButton = Find-ByName -Root $window -Name 'Set Stop Key'
+    $setStopButton = Find-ByName -Root $window -Name ('Set ' + 'Stop Key')
     if ($setStopButton) {
-        throw 'Activation mode smoke failed. Stop key controls were still visible after selecting Single toggle key.'
-    }
-
-    $savedSettings = Get-Content -LiteralPath $settingsPath -Raw | ConvertFrom-Json
-    if ($savedSettings.ActivationMode -ne 1) {
-        throw "Activation mode smoke failed. Expected saved ActivationMode 1 after selecting Single toggle key; found $($savedSettings.ActivationMode)."
+        throw 'Toggle binding smoke failed. Stop key controls were visible.'
     }
 
     $invoke = $setToggleButton.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern)
@@ -248,7 +203,7 @@ try {
 
     Wait-For { (Get-EditValues -Root $window) -contains 'A' } 'the captured A key' | Out-Null
 
-    'KeyHold UI smoke passed: dark window, readable combo box, toggle-only binding UI, capture prompt, and key capture.'
+    'KeyHold UI smoke passed: dark window, toggle-only binding UI, capture prompt, and key capture.'
 }
 finally {
     if ($process -and -not $process.HasExited) {
