@@ -31,6 +31,13 @@ public sealed class NotifyIconHost : IDisposable
         };
 
         notifyIcon.DoubleClick += (_, _) => showWindow();
+        notifyIcon.MouseUp += (_, e) =>
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                showWindow();
+            }
+        };
     }
 
     public void Update(HoldStatus status)
