@@ -35,6 +35,21 @@ function Find-ByName {
     return $Root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
 }
 
+function Find-ByNameAndControlType {
+    param(
+        [System.Windows.Automation.AutomationElement]$Root,
+        [string]$Name,
+        [System.Windows.Automation.ControlType]$ControlType
+    )
+
+    $nameCondition = New-Object System.Windows.Automation.PropertyCondition `
+        -ArgumentList ([System.Windows.Automation.AutomationElement]::NameProperty), $Name
+    $typeCondition = New-Object System.Windows.Automation.PropertyCondition `
+        -ArgumentList ([System.Windows.Automation.AutomationElement]::ControlTypeProperty), $ControlType
+    $condition = New-Object System.Windows.Automation.AndCondition -ArgumentList $nameCondition, $typeCondition
+    return $Root.FindFirst([System.Windows.Automation.TreeScope]::Descendants, $condition)
+}
+
 function Get-EditValues {
     param([System.Windows.Automation.AutomationElement]$Root)
 
@@ -56,6 +71,22 @@ function Get-ComboBoxes {
     $condition = New-Object System.Windows.Automation.PropertyCondition `
         -ArgumentList ([System.Windows.Automation.AutomationElement]::ControlTypeProperty), ([System.Windows.Automation.ControlType]::ComboBox)
     return $Root.FindAll([System.Windows.Automation.TreeScope]::Descendants, $condition)
+}
+
+function Select-ComboBoxItem {
+    param(
+        [System.Windows.Automation.AutomationElement]$Root,
+        [System.Windows.Automation.AutomationElement]$ComboBox,
+        [string]$Name
+    )
+
+    $expand = $ComboBox.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern)
+    $expand.Expand()
+    Start-Sleep -Milliseconds 250
+
+    $ComboBox.SetFocus()
+    [System.Windows.Forms.SendKeys]::SendWait('{DOWN}{ENTER}')
+    Start-Sleep -Milliseconds 250
 }
 
 function Assert-DarkWindow {
@@ -160,7 +191,7 @@ $process = $null
 try {
     New-Item -ItemType Directory -Path $settingsFolder -Force | Out-Null
     $testSettings = @{
-        ActivationMode = 1
+        ActivationMode = 0
         EnableBinding = @{ Device = 0; Code = 33; DisplayName = 'Page Up' }
         StopBinding = @{ Device = 0; Code = 34; DisplayName = 'Page Down' }
         EmergencyBinding = @{ Device = 0; Code = 123; DisplayName = 'F12' }
@@ -196,7 +227,19 @@ try {
     } 'the activation mode combo box'
     Assert-DarkControlInterior -Control $activationModeBox -Description 'Activation mode combo box'
 
+    Select-ComboBoxItem -Root $root -ComboBox $activationModeBox -Name 'Single toggle key'
+
     $setToggleButton = Wait-For { Find-ByName -Root $window -Name 'Set Toggle Key' } 'the Set Toggle Key button'
+    $setStopButton = Find-ByName -Root $window -Name 'Set Stop Key'
+    if ($setStopButton) {
+        throw 'Activation mode smoke failed. Stop key controls were still visible after selecting Single toggle key.'
+    }
+
+    $savedSettings = Get-Content -LiteralPath $settingsPath -Raw | ConvertFrom-Json
+    if ($savedSettings.ActivationMode -ne 1) {
+        throw "Activation mode smoke failed. Expected saved ActivationMode 1 after selecting Single toggle key; found $($savedSettings.ActivationMode)."
+    }
+
     $invoke = $setToggleButton.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern)
     $invoke.Invoke()
 

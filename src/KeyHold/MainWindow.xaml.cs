@@ -125,17 +125,9 @@ public partial class MainWindow
 
         try
         {
-            if (!TryGetSelectedTag(ActivationModeBox, out var activationMode)
-                || !TryGetSelectedTag(ThemeBox, out var theme)
-                || !TryGetSelectedTag(MouseBindingBox, out var mouseTrigger))
-            {
-                AddDiagnostic(new DiagnosticEntry(DateTime.Now, "Settings change skipped while controls were still loading."));
-                return;
-            }
-
-            settings.ActivationMode = Enum.Parse<ActivationMode>(activationMode);
-            settings.Theme = Enum.Parse<AppThemeMode>(theme);
-            settings.MouseTrigger = AppInputBinding.Mouse(Enum.Parse<MouseTriggerCode>(mouseTrigger));
+            settings.ActivationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
+            settings.Theme = GetSelectedEnumOrCurrent(ThemeBox, settings.Theme);
+            settings.MouseTrigger = AppInputBinding.Mouse(GetSelectedMouseTriggerOrCurrent());
             settings.SuppressTriggerInput = SuppressTriggersBox.IsChecked == true;
             settings.LaunchToTray = LaunchToTrayBox.IsChecked == true;
             settings.ShowNotifications = NotificationsBox.IsChecked == true;
@@ -175,6 +167,22 @@ public partial class MainWindow
 
         tag = selectedTag;
         return true;
+    }
+
+    private static TEnum GetSelectedEnumOrCurrent<TEnum>(WpfComboBox box, TEnum currentValue)
+        where TEnum : struct, Enum
+    {
+        return TryGetSelectedTag(box, out var tag) && Enum.TryParse<TEnum>(tag, out var selectedValue)
+            ? selectedValue
+            : currentValue;
+    }
+
+    private MouseTriggerCode GetSelectedMouseTriggerOrCurrent()
+    {
+        var current = Enum.IsDefined(typeof(MouseTriggerCode), settings.MouseTrigger.Code)
+            ? (MouseTriggerCode)settings.MouseTrigger.Code
+            : MouseTriggerCode.XButton1;
+        return GetSelectedEnumOrCurrent(MouseBindingBox, current);
     }
 
     private System.Windows.Media.Brush FindBrush(string resourceKey)
@@ -305,9 +313,10 @@ public partial class MainWindow
 
     private void UpdateBindingUi()
     {
-        var isToggle = settings.ActivationMode == ActivationMode.Toggle;
-        var isSeparateKeys = settings.ActivationMode == ActivationMode.SeparateKeys;
-        var isMouseTrigger = settings.ActivationMode == ActivationMode.MouseTrigger;
+        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
+        var isToggle = activationMode == ActivationMode.Toggle;
+        var isSeparateKeys = activationMode == ActivationMode.SeparateKeys;
+        var isMouseTrigger = activationMode == ActivationMode.MouseTrigger;
 
         EnableBindingPanel.Visibility = isMouseTrigger ? Visibility.Collapsed : Visibility.Visible;
         StopBindingPanel.Visibility = isSeparateKeys ? Visibility.Visible : Visibility.Collapsed;
@@ -328,9 +337,10 @@ public partial class MainWindow
 
     private string GetBindingTargetName(BindingTarget target)
     {
+        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
         return target switch
         {
-            BindingTarget.Enable when settings.ActivationMode == ActivationMode.Toggle => "Toggle Key",
+            BindingTarget.Enable when activationMode == ActivationMode.Toggle => "Toggle Key",
             BindingTarget.Enable => "Enable Key",
             BindingTarget.Stop => "Stop Key",
             BindingTarget.Emergency => "Emergency Key",
@@ -340,10 +350,11 @@ public partial class MainWindow
 
     private bool IsCaptureTargetAvailable(BindingTarget target)
     {
+        var activationMode = GetSelectedEnumOrCurrent(ActivationModeBox, settings.ActivationMode);
         return target switch
         {
-            BindingTarget.Enable => settings.ActivationMode != ActivationMode.MouseTrigger,
-            BindingTarget.Stop => settings.ActivationMode == ActivationMode.SeparateKeys,
+            BindingTarget.Enable => activationMode != ActivationMode.MouseTrigger,
+            BindingTarget.Stop => activationMode == ActivationMode.SeparateKeys,
             BindingTarget.Emergency => true,
             _ => false
         };

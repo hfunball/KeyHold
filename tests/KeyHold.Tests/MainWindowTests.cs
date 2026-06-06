@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using KeyHold.Models;
@@ -11,6 +12,8 @@ namespace KeyHold.Tests;
 public sealed class MainWindowTests
 {
     private const int A = 0x41;
+    private const int PageUp = 0x21;
+    private const int PageDown = 0x22;
 
     [STATestMethod]
     public void DefaultSettings_ShowHomeToggleOnly()
@@ -39,6 +42,35 @@ public sealed class MainWindowTests
             Assert.AreEqual(Visibility.Visible, Find<FrameworkElement>(window, "EnableBindingPanel").Visibility);
             Assert.AreEqual(Visibility.Collapsed, Find<FrameworkElement>(window, "StopBindingPanel").Visibility);
             Assert.AreEqual(Visibility.Collapsed, Find<FrameworkElement>(window, "MouseBindingPanel").Visibility);
+            Assert.AreEqual("Toggle key", Find<TextBlock>(window, "EnableBindingLabel").Text);
+            Assert.AreEqual("Set Toggle Key", Find<Button>(window, "CaptureEnableButton").Content);
+        }
+        finally
+        {
+            Close(window);
+        }
+    }
+
+    [STATestMethod]
+    public void ActivationModeChangeToToggle_SavesAndHidesStopKey()
+    {
+        var settings = new AppSettings
+        {
+            ActivationMode = ActivationMode.SeparateKeys,
+            EnableBinding = InputBinding.Keyboard(PageUp),
+            StopBinding = InputBinding.Keyboard(PageDown)
+        };
+        var window = CreateWindow(settings);
+        try
+        {
+            Assert.AreEqual(Visibility.Visible, Find<FrameworkElement>(window, "StopBindingPanel").Visibility);
+
+            SelectComboItem(Find<ComboBox>(window, "ActivationModeBox"), "Toggle");
+            InvokePrivate(window, "SaveSettingsFromUi");
+
+            Assert.AreEqual(ActivationMode.Toggle, settings.ActivationMode);
+            Assert.AreEqual(Visibility.Visible, Find<FrameworkElement>(window, "EnableBindingPanel").Visibility);
+            Assert.AreEqual(Visibility.Collapsed, Find<FrameworkElement>(window, "StopBindingPanel").Visibility);
             Assert.AreEqual("Toggle key", Find<TextBlock>(window, "EnableBindingLabel").Text);
             Assert.AreEqual("Set Toggle Key", Find<Button>(window, "CaptureEnableButton").Content);
         }
@@ -102,6 +134,27 @@ public sealed class MainWindowTests
         var element = window.FindName(name);
         Assert.IsNotNull(element, $"Expected {name} to exist.");
         return (T)element;
+    }
+
+    private static void SelectComboItem(ComboBox comboBox, string tag)
+    {
+        foreach (ComboBoxItem item in comboBox.Items)
+        {
+            if (string.Equals((string)item.Tag, tag, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = item;
+                return;
+            }
+        }
+
+        Assert.Fail($"Expected combo item with tag {tag}.");
+    }
+
+    private static void InvokePrivate(MainWindow window, string methodName)
+    {
+        var method = typeof(MainWindow).GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.IsNotNull(method, $"Expected private method {methodName} to exist.");
+        method.Invoke(window, null);
     }
 
     private static void Close(MainWindow window)
