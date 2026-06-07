@@ -5,11 +5,15 @@
     <Application.Resources>
         <SolidColorBrush x:Key="AppBackgroundBrush" Color="#101318" />
         <SolidColorBrush x:Key="PanelBrush" Color="#171B22" />
+        <SolidColorBrush x:Key="ControlBrush" Color="#1D232C" />
+        <SolidColorBrush x:Key="ControlHoverBrush" Color="#242C37" />
+        <SolidColorBrush x:Key="ControlSelectedBrush" Color="#213B4F" />
+        <SolidColorBrush x:Key="StatusIdleBrush" Color="#29313D" />
         <SolidColorBrush x:Key="TextBrush" Color="#F5F7FA" />
+        <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
         <SolidColorBrush x:Key="MutedTextBrush" Color="#A9B2C3" />
         <SolidColorBrush x:Key="AccentBrush" Color="#35A7FF" />
         <SolidColorBrush x:Key="DangerBrush" Color="#FF5D5D" />
         <SolidColorBrush x:Key="BorderBrush" Color="#29313D" />
     </Application.Resources>
 </Application>
-

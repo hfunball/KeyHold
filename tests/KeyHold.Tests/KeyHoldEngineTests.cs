@@ -161,7 +161,7 @@ public sealed class KeyHoldEngineTests
     }
 
     [TestMethod]
-    public void StableHold_NonHeldKeyPressCancelsAndReleasesHeldKeys()
+    public void StableHold_NonHeldKeyPressDoesNotCancelByDefault()
     {
         var sender = new RecordingInputSender();
         using var engine = CreateEngine(new AppSettings(), sender);
@@ -174,8 +174,60 @@ public sealed class KeyHoldEngineTests
 
         Assert.IsFalse(engine.HandleKeyboardEvent(Down(A)));
 
+        Assert.AreEqual(0, sender.UpCount(W));
+        Assert.IsTrue(engine.Status.IsActive);
+    }
+
+    [TestMethod]
+    public void StableHold_NonHeldKeyPressCanCancelWhenEnabled()
+    {
+        var sender = new RecordingInputSender();
+        using var engine = CreateEngine(new AppSettings { StopOnAnyKeyboardPress = true }, sender);
+
+        engine.HandleKeyboardEvent(Down(W));
+        engine.HandleKeyboardEvent(Down(Home));
+
+        Assert.IsTrue(engine.HandleKeyboardEvent(Up(W)));
+        Assert.AreEqual(2, sender.DownCount(W));
+
+        Assert.IsFalse(engine.HandleKeyboardEvent(Down(A)));
+
         CollectionAssert.Contains(sender.UpKeys, W);
         Assert.IsFalse(engine.Status.IsActive);
+    }
+
+    [TestMethod]
+    public void TriggerCapture_CapturesKeyboardTrigger()
+    {
+        var sender = new RecordingInputSender();
+        using var engine = CreateEngine(new AppSettings(), sender);
+        InputBinding? captured = null;
+        engine.ToggleTriggerCaptured += (_, binding) => captured = binding;
+
+        engine.BeginToggleTriggerCapture();
+
+        Assert.IsTrue(engine.HandleKeyboardEvent(Down(A)));
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(InputDeviceKind.Keyboard, captured.Device);
+        Assert.AreEqual(A, captured.Code);
+    }
+
+    [TestMethod]
+    public void TriggerCapture_CapturesMouseTrigger()
+    {
+        var sender = new RecordingInputSender();
+        using var engine = CreateEngine(new AppSettings(), sender);
+        InputBinding? captured = null;
+        engine.ToggleTriggerCaptured += (_, binding) => captured = binding;
+
+        engine.BeginToggleTriggerCapture();
+
+        Assert.IsTrue(engine.HandleMouseEvent(new MouseInputEvent(MouseTriggerCode.XButton1, true, false)));
+
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(InputDeviceKind.Mouse, captured.Device);
+        Assert.AreEqual((int)MouseTriggerCode.XButton1, captured.Code);
     }
 
     private static KeyboardInputEvent Down(int key)

@@ -23,7 +23,7 @@ KeyLatch is the strongest alternate if KeyHold becomes unavailable or confusing.
 
 ## Parked: KeyRun
 
-KeyRun has good gaming energy, but it is less precise. It can imply repeated running or a broader task-runner product, which is not the intended beta scope.
+KeyRun has good gaming energy, but it is less precise. It can imply repeated running or a broader task-runner product, which is not the intended 1.0 scope.
 
 - Strength: memorable and game-adjacent.
 - Risk: less ownable, less direct, and easier to confuse with other tools.
@@ -39,7 +39,7 @@ PressLatch is accurate but less friendly. It sounds more like an internal utilit
 
 ## Early Lock
 
-Use KeyHold as the beta product name and design system anchor. Keep the current blue graphite visual route, add green only for active holding state, and avoid choices that would make the app harder to publish openly later.
+Use KeyHold as the product name and design system anchor. Keep the current blue graphite visual route, add green only for active holding state, and avoid choices that would make the app harder to publish openly later.
 
 ## Publishing Guardrails
 

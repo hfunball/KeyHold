@@ -21,7 +21,7 @@
 - Run NuGet audit during restore.
 - Run tests on every pull request.
 
-## Before beta release
+## Before 1.0 release
 
 - Run `dotnet restore`, `dotnet build`, and `dotnet test`.
 - Scan release artifacts with Microsoft Defender.
@@ -34,4 +34,3 @@
 - Add a privacy note.
 - Add game compatibility warnings.
 - Run Windows App Certification Kit for any Store-targeted package.
-

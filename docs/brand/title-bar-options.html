@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KeyHold Title Bar Options</title>
+  <style>
+    :root {
+      --ink: #101318;
+      --panel: #171b22;
+      --panel-2: #1d232c;
+      --line: #29313d;
+      --text: #f5f7fa;
+      --muted: #a9b2c3;
+      --blue: #35a7ff;
+      --blue-2: #0f7bdc;
+      --green: #57d88f;
+      --white: #ffffff;
+      --paper: #f5f7fb;
+      --paper-line: #d6dde8;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--text);
+      padding: 28px;
+    }
+
+    header {
+      max-width: 1180px;
+      margin: 0 auto 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .grid {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      background: #0d1015;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .label strong {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .mock {
+      min-height: 126px;
+      padding: 16px;
+      background: var(--ink);
+    }
+
+    .titlebar {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border: 2px solid var(--blue);
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: #171b22;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cap {
+      width: 20px;
+      height: 22px;
+      border-radius: 5px;
+      background: #242932;
+      border-bottom: 5px solid #101318;
+      position: relative;
+    }
+
+    .cap::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--white);
+      left: 5px;
+      top: 9px;
+    }
+
+    .copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .copy h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+
+    .copy span {
+      display: block;
+      color: var(--muted);
+      margin-top: 5px;
+      font-size: 13px;
+    }
+
+    .pill {
+      position: relative;
+      z-index: 1;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: #29313d;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .a .titlebar {
+      background: linear-gradient(90deg, #171b22, #121720);
+    }
+
+    .b .titlebar {
+      background: var(--panel);
+      border-left: 5px solid var(--blue);
+    }
+
+    .c .titlebar {
+      background:
+        linear-gradient(90deg, rgba(53, 167, 255, 0.18), transparent 48%),
+        var(--panel);
+    }
+
+    .d .titlebar {
+      background: #131820;
+    }
+
+    .d .titlebar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, rgba(53, 167, 255, 0.18) 1px, transparent 1px);
+      background-size: 18px 100%;
+      opacity: 0.28;
+    }
+
+    .e .titlebar {
+      background: var(--panel);
+    }
+
+    .e .titlebar::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), transparent);
+    }
+
+    .f .titlebar {
+      background: #f5f7fb;
+      border-color: #d6dde8;
+      color: #161a20;
+    }
+
+    .f .copy h2,
+    .f .pill {
+      color: #161a20;
+    }
+
+    .f .copy span {
+      color: #5e6878;
+    }
+
+    .f .pill {
+      background: #e5ecf5;
+    }
+
+    .g .titlebar {
+      background: #101318;
+      box-shadow: inset 0 0 0 1px rgba(53, 167, 255, 0.28);
+    }
+
+    .g .logo {
+      background: var(--blue);
+      border-color: #030406;
+    }
+
+    .g .cap {
+      background: #101318;
+      border-bottom-color: #030406;
+    }
+
+    .h .titlebar {
+      background: linear-gradient(135deg, #171b22 0%, #171b22 60%, #0f7bdc 60%, #35a7ff 100%);
+    }
+
+    .i .titlebar {
+      background: var(--panel);
+    }
+
+    .i .titlebar::before {
+      content: "";
+      position: absolute;
+      width: 115px;
+      height: 115px;
+      right: -34px;
+      top: -34px;
+      border: 1px solid rgba(53, 167, 255, 0.55);
+      border-radius: 18px;
+      transform: rotate(18deg);
+    }
+
+    .j .titlebar {
+      background: #151a22;
+    }
+
+    .j .copy h2 {
+      color: var(--blue);
+    }
+
+    .k .titlebar {
+      background: var(--panel);
+    }
+
+    .k .copy {
+      border-left: 1px solid rgba(169, 178, 195, 0.35);
+      padding-left: 14px;
+    }
+
+    .l .titlebar {
+      background:
+        linear-gradient(0deg, rgba(53, 167, 255, 0.10), transparent),
+        #171b22;
+    }
+
+    .l .pill {
+      border: 1px solid rgba(53, 167, 255, 0.6);
+      background: rgba(53, 167, 255, 0.12);
+    }
+
+    .m .titlebar {
+      background: #11161e;
+    }
+
+    .m .titlebar::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      width: 82px;
+      height: 10px;
+      border-top: 2px solid rgba(53, 167, 255, 0.75);
+      border-right: 2px solid rgba(53, 167, 255, 0.75);
+      border-radius: 0 8px 0 0;
+    }
+
+    .n .titlebar {
+      background: #171b22;
+    }
+
+    .n .logo {
+      width: 46px;
+      height: 46px;
+    }
+
+    .o .titlebar {
+      background:
+        repeating-linear-gradient(135deg, rgba(53, 167, 255, 0.11), rgba(53, 167, 255, 0.11) 1px, transparent 1px, transparent 9px),
+        #171b22;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KeyHold Title Bar Options</h1>
+    <p>Fifteen compact directions for the app header. Each keeps the current KeyHold logo, status pill, and dark utility-app feel, but gives the top bar more character.</p>
+  </header>
+  <main class="grid">
+    <section class="card a"><div class="label"><strong>01 Quiet Rail</strong><span>Reserved gradient depth</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card b"><div class="label"><strong>02 Blue Spine</strong><span>Simple left accent</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card c"><div class="label"><strong>03 Signal Wash</strong><span>Soft activation glow</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card d"><div class="label"><strong>04 Trace Lines</strong><span>Subtle input grid</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card e"><div class="label"><strong>05 Status Underline</strong><span>Clean bottom trace</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card f"><div class="label"><strong>06 Light Mode Header</strong><span>Readable bright variant</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card g"><div class="label"><strong>07 Active Inversion</strong><span>Echoes tray active icon</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card h"><div class="label"><strong>08 Corner Charge</strong><span>Energetic diagonal panel</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card i"><div class="label"><strong>09 Keycap Orbit</strong><span>Geometric brand cue</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card j"><div class="label"><strong>10 Blue Wordmark</strong><span>Name carries the accent</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card k"><div class="label"><strong>11 Split Lockup</strong><span>Logo and copy separated</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card l"><div class="label"><strong>12 Instrument Panel</strong><span>Quieter active-state feel</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card m"><div class="label"><strong>13 Corner Trace</strong><span>Small technical flourish</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card n"><div class="label"><strong>14 Larger Mark</strong><span>Logo-forward header</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+    <section class="card o"><div class="label"><strong>15 Input Texture</strong><span>Patterned but restrained</span></div><div class="mock"><div class="titlebar"><div class="logo"><div class="cap"></div></div><div class="copy"><h2>KeyHold</h2><span>Held-key utility for games and simple Windows tasks</span></div><div class="pill">Idle</div></div></div></section>
+  </main>
+</body>
+</html>

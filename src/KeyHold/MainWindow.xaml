@@ -23,7 +23,7 @@
         <Style TargetType="TextBox">
             <Setter Property="MinHeight" Value="32" />
             <Setter Property="Margin" Value="0,6,0,0" />
-            <Setter Property="Background" Value="#1D232C" />
+            <Setter Property="Background" Value="{DynamicResource ControlBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="CaretBrush" Value="{DynamicResource TextBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -31,7 +31,7 @@
         <Style TargetType="ComboBox">
             <Setter Property="MinHeight" Value="32" />
             <Setter Property="Margin" Value="0,6,0,0" />
-            <Setter Property="Background" Value="#1D232C" />
+            <Setter Property="Background" Value="{DynamicResource ControlBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
             <Setter Property="Padding" Value="10,0,32,0" />
@@ -62,11 +62,11 @@
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ToggleBorder" Property="Background" Value="#242C37" />
+                                                <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlHoverBrush}" />
                                                 <Setter TargetName="ToggleBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="ToggleBorder" Property="Background" Value="#242C37" />
+                                                <Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource ControlHoverBrush}" />
                                                 <Setter TargetName="ToggleBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
@@ -127,10 +127,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#26303D" />
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ControlHoverBrush}" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="ItemBorder" Property="Background" Value="#213B4F" />
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ControlSelectedBrush}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.55" />
@@ -178,11 +178,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#242C37" />
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ControlHoverBrush}" />
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="TabBorder" Property="Background" Value="#1D232C" />
+                                <Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ControlBrush}" />
                                 <Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                                 <Setter Property="Panel.ZIndex" Value="1" />
                             </Trigger>
@@ -257,7 +257,7 @@
             <TabItem Header="Bindings">
                 <StackPanel Margin="14"
                             Background="{DynamicResource AppBackgroundBrush}"
-                            MaxWidth="420"
+                            MaxWidth="620"
                             HorizontalAlignment="Left">
                     <TextBlock Text="Toggle trigger" FontWeight="SemiBold" />
                     <TextBox x:Name="ToggleBindingText" IsReadOnly="True" Focusable="True" />
@@ -265,7 +265,19 @@
                             Content="Set Toggle Trigger"
                             Margin="0,8,8,0"
                             Click="CaptureToggle_Click" />
+                    <TextBlock Text="Existing apps, games, or mouse software already bound to a key or button can interfere with KeyHold seeing it."
+                               Foreground="{DynamicResource MutedTextBrush}"
+                               Margin="0,12,0,0"
+                               TextWrapping="Wrap" />
                 </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Read Me">
+                <FlowDocumentScrollViewer x:Name="ReadMeViewer"
+                                          Margin="14"
+                                          Background="{DynamicResource AppBackgroundBrush}"
+                                          Foreground="{DynamicResource TextBrush}"
+                                          VerticalScrollBarVisibility="Auto" />
             </TabItem>
 
             <TabItem Header="Settings">
@@ -288,6 +300,10 @@
                               Content="Show tray notifications"
                               Checked="SettingChanged"
                               Unchecked="SettingChanged" />
+                    <CheckBox x:Name="StopOnAnyKeyBox"
+                              Content="Stop key hold with any keyboard button press"
+                              Checked="SettingChanged"
+                              Unchecked="SettingChanged" />
                 </StackPanel>
             </TabItem>
 
@@ -305,9 +321,5 @@
             </TabItem>
         </TabControl>
 
-        <TextBlock Grid.Row="2"
-                   Text="Beta warning: intended for single-player use. Some games, elevated apps, and protected processes may ignore synthetic input."
-                   Foreground="{DynamicResource MutedTextBrush}"
-                   TextWrapping="Wrap" />
     </Grid>
 </Window>

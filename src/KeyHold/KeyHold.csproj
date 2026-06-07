@@ -11,5 +11,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\KeyHold.png" />
+    <Content Include="Content\ReadMe.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

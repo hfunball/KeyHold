@@ -1,4 +1,4 @@
-# Beta Test Plan
+# 1.0 Test Plan
 
 ## Diagnostics
 

@@ -20,6 +20,8 @@ public sealed class MainWindowTests
         {
             Assert.AreEqual("Home", Find<TextBox>(window, "ToggleBindingText").Text);
             Assert.AreEqual("Set Toggle Trigger", Find<Button>(window, "CaptureToggleButton").Content);
+            Assert.IsFalse(Find<CheckBox>(window, "StopOnAnyKeyBox").IsChecked == true);
+            Assert.IsNotNull(window.FindName("ReadMeViewer"));
             Assert.IsNull(window.FindName(string.Concat("Activation", "ModeBox")));
             Assert.IsNull(window.FindName(string.Concat("Stop", "BindingPanel")));
             Assert.IsNull(window.FindName(string.Concat("Mouse", "BindingPanel")));

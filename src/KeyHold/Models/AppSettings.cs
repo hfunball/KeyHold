@@ -10,5 +10,7 @@ public sealed class AppSettings
 
     public bool ShowNotifications { get; set; } = true;
 
+    public bool StopOnAnyKeyboardPress { get; set; }
+
     public bool HasSeenFirstRun { get; set; }
 }

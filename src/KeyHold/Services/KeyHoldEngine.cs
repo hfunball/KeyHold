@@ -12,7 +12,7 @@ public sealed class KeyHoldEngine : IDisposable
     private readonly HashSet<int> handoffReadyKeys = [];
     private AppSettings settings;
     private bool disposed;
-    private bool uiCaptureActive;
+    private bool toggleTriggerCaptureActive;
 
     public KeyHoldEngine(AppSettings settings, IInputSender inputSender)
     {
@@ -27,6 +27,8 @@ public sealed class KeyHoldEngine : IDisposable
 
     public event EventHandler<DiagnosticEntry>? DiagnosticLogged;
 
+    public event EventHandler<InputBinding>? ToggleTriggerCaptured;
+
     public void UpdateSettings(AppSettings newSettings)
     {
         lock (gate)
@@ -37,11 +39,19 @@ public sealed class KeyHoldEngine : IDisposable
         Log("Settings updated.");
     }
 
-    public void SetUiCaptureActive(bool isActive)
+    public void BeginToggleTriggerCapture()
     {
         lock (gate)
         {
-            uiCaptureActive = isActive;
+            toggleTriggerCaptureActive = true;
+        }
+    }
+
+    public void CancelToggleTriggerCapture()
+    {
+        lock (gate)
+        {
+            toggleTriggerCaptureActive = false;
         }
     }
 
@@ -58,15 +68,20 @@ public sealed class KeyHoldEngine : IDisposable
         }
 
         var suppress = false;
+        InputBinding? capturedBinding = null;
 
         lock (gate)
         {
-            if (uiCaptureActive)
+            if (toggleTriggerCaptureActive)
             {
-                return false;
+                suppress = true;
+                if (input.IsDown)
+                {
+                    capturedBinding = InputBinding.Keyboard(input.VirtualKey);
+                    toggleTriggerCaptureActive = false;
+                }
             }
-
-            if (input.IsDown)
+            else if (input.IsDown)
             {
                 if (IsToggleTrigger(input.VirtualKey))
                 {
@@ -102,31 +117,57 @@ public sealed class KeyHoldEngine : IDisposable
             LogLocked($"{(input.IsDown ? "Down" : "Up")}: {VirtualKeyNames.GetName(input.VirtualKey)}{(suppress ? " (suppressed)" : string.Empty)}");
         }
 
+        if (capturedBinding is not null)
+        {
+            ToggleTriggerCaptured?.Invoke(this, capturedBinding);
+        }
+
         return suppress;
     }
 
     public bool HandleMouseEvent(MouseInputEvent input)
     {
-        if (input.IsInjected || !settings.ToggleBinding.MatchesMouse(input.Button))
+        if (input.IsInjected)
         {
             return false;
         }
 
+        var suppress = false;
+        InputBinding? capturedBinding = null;
+
         lock (gate)
         {
-            if (uiCaptureActive)
+            if (toggleTriggerCaptureActive)
             {
-                return false;
+                suppress = true;
+                if (input.IsDown)
+                {
+                    capturedBinding = InputBinding.Mouse(input.Button);
+                    toggleTriggerCaptureActive = false;
+                }
+            }
+            else if (settings.ToggleBinding.MatchesMouse(input.Button))
+            {
+                if (input.IsDown)
+                {
+                    ActivateOrReleaseLocked();
+                }
+
+                suppress = true;
             }
 
-            if (input.IsDown)
+            if (suppress)
             {
-                ActivateOrReleaseLocked();
+                LogLocked($"{(input.IsDown ? "Mouse down" : "Mouse up")}: {InputBinding.Mouse(input.Button).DisplayName} (suppressed)");
             }
-
-            LogLocked($"{(input.IsDown ? "Mouse down" : "Mouse up")}: {InputBinding.Mouse(input.Button).DisplayName} (suppressed)");
-            return true;
         }
+
+        if (capturedBinding is not null)
+        {
+            ToggleTriggerCaptured?.Invoke(this, capturedBinding);
+        }
+
+        return suppress;
     }
 
     public void ReleaseAll(string reason)
@@ -192,7 +233,11 @@ public sealed class KeyHoldEngine : IDisposable
 
         if (!heldKeys.Contains(virtualKey))
         {
-            ReleaseAllLocked($"Canceled by {VirtualKeyNames.GetName(virtualKey)}", allowPhysicalHandoff: false);
+            if (settings.StopOnAnyKeyboardPress)
+            {
+                ReleaseAllLocked($"Canceled by {VirtualKeyNames.GetName(virtualKey)}", allowPhysicalHandoff: false);
+            }
+
             return false;
         }
 
