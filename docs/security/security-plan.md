@@ -21,7 +21,7 @@
 - Run NuGet audit during restore.
 - Run tests on every pull request.
 
-## Before 1.0 release
+## Before Public Release
 
 - Run `dotnet restore`, `dotnet build`, and `dotnet test`.
 - Scan release artifacts with Microsoft Defender.

@@ -23,7 +23,7 @@ RunLatch is the strongest alternate if RunHold becomes unavailable or confusing.
 
 ## Parked: RunKey
 
-RunKey has good gaming energy, but it is less precise. It can imply repeated running or a broader task-runner product, which is not the intended 1.0 scope.
+RunKey has good gaming energy, but it is less precise. It can imply repeated running or a broader task-runner product, which is not the current scope.
 
 - Strength: memorable and game-adjacent.
 - Risk: less ownable, less direct, and easier to confuse with other tools.

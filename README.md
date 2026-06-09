@@ -25,6 +25,13 @@ User guide: [docs/user-guide.md](docs/user-guide.md)
 3. Release the physical keys.
 4. Press the toggle trigger again, press a held key to take control back, or use `Release All`.
 
+## How It Works
+
+1. Hold the key or keys you want RunHold to take over.
+2. Press your toggle trigger. The default trigger is `Home`.
+3. Release the physical keys.
+4. Press the toggle trigger again, press a held key to take control back, or use `Release All`.
+
 ## Tested Game Matrix
 
 - The Planet Crafter on Steam
