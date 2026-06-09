@@ -1,6 +1,6 @@
 # KeyHold
 
-KeyHold is a small Windows 11 tray utility for games and simple personal automation tasks. It captures the keyboard keys you are physically holding when you activate it, keeps those keys held with synthetic input, and releases them when you stop.
+RunHold is a small Windows 11 tray utility for games and simple personal automation tasks. It captures the keyboard keys you are physically holding when you activate it, keeps those keys held with synthetic input, and releases them when you stop.
 
 The product name is KeyHold. The early brand board keeps KeyLatch as a backup route and parks KeyRun and PressLatch for now.
 
@@ -10,15 +10,8 @@ The product name is KeyHold. The early brand board keeps KeyLatch as a backup ro
 - Target: stable hold for up to three captured keyboard keys.
 - A single keyboard or supported mouse-button toggle activates and stops a hold.
 - No macro recording or playback in 1.0.
-- No stealth behavior, multiplayer advantage, anti-cheat bypassing, or hidden automation.
 - Dark and light UI themes.
-- Launches minimized to the tray by default.
-
-## Initial Game Matrix
-
-- Satisfactory on Steam
-- The Planet Crafter on Steam
-- Far Cry 6 on Epic
+- Launches minimized to the tray by default, start with Windows is optional.
 
 ## Build
 
@@ -28,7 +21,7 @@ Install the .NET 10 Desktop SDK, then run:
 dotnet restore
 dotnet build
 dotnet test
-dotnet run --project src/KeyHold
+dotnet run --project src/RunHold
 ```
 
 ## Security Position
