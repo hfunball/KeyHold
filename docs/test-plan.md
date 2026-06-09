@@ -22,7 +22,7 @@
 ## Safety
 
 - Alt-tab while active.
-- Restart KeyHold while active.
+- Restart RunHold while active.
 - Sleep/wake while active.
 - Keyboard disconnect/reconnect.
 - Verify no stuck keys after physical held-key handoff, tray `Release All`, or app exit.

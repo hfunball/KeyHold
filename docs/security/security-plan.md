@@ -10,7 +10,7 @@
 
 - Review all P/Invoke declarations carefully.
 - Keep hook callbacks fast and small.
-- Ignore KeyHold's own injected events.
+- Ignore RunHold's own injected events.
 - Release held keys on all shutdown paths.
 - Store only configured virtual-key bindings and preferences.
 

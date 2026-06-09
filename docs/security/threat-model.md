@@ -1,8 +1,8 @@
-# KeyHold Threat Model
+# RunHold Threat Model
 
 ## Security-sensitive behavior
 
-KeyHold monitors keyboard state and supported mouse trigger buttons, and it injects keyboard input. That means it must behave like a visible local utility, not hidden automation.
+RunHold monitors keyboard state and supported mouse trigger buttons, and it injects keyboard input. That means it must behave like a visible local utility, not hidden automation.
 
 ## Primary risks
 

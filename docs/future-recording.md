@@ -2,7 +2,7 @@
 
 Macro recording and playback are intentionally outside the 1.0 goal.
 
-If keeping the PC awake is the real need, use PowerToys Awake or Windows power APIs such as `SetThreadExecutionState`. KeyHold should not fake activity with repeated keyboard playback unless a future use case specifically needs macro behavior.
+If keeping the PC awake is the real need, use PowerToys Awake or Windows power APIs such as `SetThreadExecutionState`. RunHold should not fake activity with repeated keyboard playback unless a future use case specifically needs macro behavior.
 
 If recording is added later:
 

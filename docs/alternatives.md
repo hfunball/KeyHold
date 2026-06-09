@@ -1,6 +1,6 @@
 # Alternative Check
 
-Recommendation: build KeyHold if the goal is a simpler, game-focused tray utility with diagnostics, physical-key handoff, no scripting, clean config, and public-release polish.
+Recommendation: build RunHold if the goal is a simpler, game-focused tray utility with diagnostics, physical-key handoff, no scripting, clean config, and public-release polish.
 
 Use existing tools instead when they fit:
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller
+  xmlns="http://schemas.microsoft.com/appx/appinstaller/2018"
+  Version="1.1.0.0"
+  Uri="https://github.com/hfunball/RunHold/releases/download/v1.1/RunHold.appinstaller">
+
+  <MainPackage
+    Name="REPLACE_WITH_PACKAGE_IDENTITY_NAME"
+    Publisher="CN=REPLACE_WITH_PACKAGE_PUBLISHER"
+    Version="1.1.0.0"
+    ProcessorArchitecture="x64"
+    Uri="https://github.com/hfunball/RunHold/releases/download/v1.1/RunHold_1.1.0.0_x64.msix" />
+
+  <UpdateSettings>
+    <OnLaunch HoursBetweenUpdateChecks="24" ShowPrompt="true" UpdateBlocksActivation="false" />
+  </UpdateSettings>
+</AppInstaller>

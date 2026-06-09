@@ -1,5 +1,5 @@
 param(
-    [string]$ExecutablePath = (Join-Path $PSScriptRoot '..\src\KeyHold\bin\Debug\net10.0-windows\KeyHold.exe')
+    [string]$ExecutablePath = (Join-Path $PSScriptRoot '..\src\RunHold\bin\Debug\net10.0-windows\RunHold.exe')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,19 +25,19 @@ function Wait-For {
 }
 
 if (!(Test-Path -LiteralPath $ExecutablePath)) {
-    throw "KeyHold executable was not found at $ExecutablePath. Run the build first."
+    throw "RunHold executable was not found at $ExecutablePath. Run the build first."
 }
 
-$existing = Get-Process -Name KeyHold -ErrorAction SilentlyContinue
+$existing = Get-Process -Name RunHold -ErrorAction SilentlyContinue
 if ($existing) {
-    throw 'Close any running KeyHold process before running this smoke test.'
+    throw 'Close any running RunHold process before running this smoke test.'
 }
 
 Add-Type @'
 using System;
 using System.Runtime.InteropServices;
 
-public static class KeyHoldStableSmokeInput
+public static class RunHoldStableSmokeInput
 {
     private const uint KeyEventFKeyUp = 0x0002;
 
@@ -64,12 +64,12 @@ public static class KeyHoldStableSmokeInput
 }
 '@
 
-$settingsPath = Join-Path $env:LOCALAPPDATA 'KeyHold\settings.json'
+$settingsPath = Join-Path $env:LOCALAPPDATA 'RunHold\settings.json'
 $settingsFolder = Split-Path -Parent $settingsPath
 $hadSettings = Test-Path -LiteralPath $settingsPath
 $originalSettings = if ($hadSettings) { Get-Content -LiteralPath $settingsPath -Raw } else { $null }
-$previousSmokeFlag = [Environment]::GetEnvironmentVariable('KEYHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', 'Process')
-$keyHoldProcess = $null
+$previousSmokeFlag = [Environment]::GetEnvironmentVariable('RUNHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', 'Process')
+$runHoldProcess = $null
 
 $a = [byte]0x41
 $s = [byte]0x53
@@ -87,32 +87,32 @@ try {
     } | ConvertTo-Json -Depth 4
     [System.IO.File]::WriteAllText($settingsPath, $testSettings)
 
-    [Environment]::SetEnvironmentVariable('KEYHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', '1', 'Process')
-    $keyHoldStartInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $keyHoldStartInfo.FileName = $ExecutablePath
-    $keyHoldStartInfo.UseShellExecute = $false
-    $keyHoldStartInfo.EnvironmentVariables['KEYHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE'] = '1'
-    $keyHoldProcess = [System.Diagnostics.Process]::Start($keyHoldStartInfo)
-    Wait-For { Get-Process -Id $keyHoldProcess.Id -ErrorAction SilentlyContinue } 'KeyHold process' | Out-Null
+    [Environment]::SetEnvironmentVariable('RUNHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', '1', 'Process')
+    $runHoldStartInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $runHoldStartInfo.FileName = $ExecutablePath
+    $runHoldStartInfo.UseShellExecute = $false
+    $runHoldStartInfo.EnvironmentVariables['RUNHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE'] = '1'
+    $runHoldProcess = [System.Diagnostics.Process]::Start($runHoldStartInfo)
+    Wait-For { Get-Process -Id $runHoldProcess.Id -ErrorAction SilentlyContinue } 'RunHold process' | Out-Null
     Start-Sleep -Seconds 1
 
-    [KeyHoldStableSmokeInput]::KeyDown($a)
-    [KeyHoldStableSmokeInput]::KeyDown($s)
-    [KeyHoldStableSmokeInput]::KeyDown($w)
+    [RunHoldStableSmokeInput]::KeyDown($a)
+    [RunHoldStableSmokeInput]::KeyDown($s)
+    [RunHoldStableSmokeInput]::KeyDown($w)
     Start-Sleep -Milliseconds 150
-    [KeyHoldStableSmokeInput]::KeyDown($homeKey)
+    [RunHoldStableSmokeInput]::KeyDown($homeKey)
     Start-Sleep -Milliseconds 40
-    [KeyHoldStableSmokeInput]::KeyUp($homeKey)
+    [RunHoldStableSmokeInput]::KeyUp($homeKey)
     Start-Sleep -Milliseconds 100
-    [KeyHoldStableSmokeInput]::KeyUp($a)
-    [KeyHoldStableSmokeInput]::KeyUp($s)
-    [KeyHoldStableSmokeInput]::KeyUp($w)
+    [RunHoldStableSmokeInput]::KeyUp($a)
+    [RunHoldStableSmokeInput]::KeyUp($s)
+    [RunHoldStableSmokeInput]::KeyUp($w)
     Start-Sleep -Milliseconds 150
 
     $samples = 0
     $allDownSamples = 0
     for ($i = 0; $i -lt 25; $i++) {
-        $allDown = [KeyHoldStableSmokeInput]::IsDown($a) -and [KeyHoldStableSmokeInput]::IsDown($s) -and [KeyHoldStableSmokeInput]::IsDown($w)
+        $allDown = [RunHoldStableSmokeInput]::IsDown($a) -and [RunHoldStableSmokeInput]::IsDown($s) -and [RunHoldStableSmokeInput]::IsDown($w)
         if ($allDown) {
             $allDownSamples++
         }
@@ -125,33 +125,33 @@ try {
         throw "Stable hold smoke failed. Expected A/S/W to stay down after physical release; saw all three down in $allDownSamples of $samples samples."
     }
 
-    [KeyHoldStableSmokeInput]::KeyDown($homeKey)
+    [RunHoldStableSmokeInput]::KeyDown($homeKey)
     Start-Sleep -Milliseconds 40
-    [KeyHoldStableSmokeInput]::KeyUp($homeKey)
+    [RunHoldStableSmokeInput]::KeyUp($homeKey)
     Start-Sleep -Milliseconds 200
 
-    $anyStillDown = [KeyHoldStableSmokeInput]::IsDown($a) -or [KeyHoldStableSmokeInput]::IsDown($s) -or [KeyHoldStableSmokeInput]::IsDown($w)
+    $anyStillDown = [RunHoldStableSmokeInput]::IsDown($a) -or [RunHoldStableSmokeInput]::IsDown($s) -or [RunHoldStableSmokeInput]::IsDown($w)
     if ($anyStillDown) {
         throw 'Stable hold smoke failed. At least one held key was still down after Home stop.'
     }
 
-    [KeyHoldStableSmokeInput]::KeyDown($a)
-    [KeyHoldStableSmokeInput]::KeyDown($s)
-    [KeyHoldStableSmokeInput]::KeyDown($w)
+    [RunHoldStableSmokeInput]::KeyDown($a)
+    [RunHoldStableSmokeInput]::KeyDown($s)
+    [RunHoldStableSmokeInput]::KeyDown($w)
     Start-Sleep -Milliseconds 150
-    [KeyHoldStableSmokeInput]::KeyDown($homeKey)
+    [RunHoldStableSmokeInput]::KeyDown($homeKey)
     Start-Sleep -Milliseconds 40
-    [KeyHoldStableSmokeInput]::KeyUp($homeKey)
+    [RunHoldStableSmokeInput]::KeyUp($homeKey)
     Start-Sleep -Milliseconds 100
-    [KeyHoldStableSmokeInput]::KeyUp($a)
-    [KeyHoldStableSmokeInput]::KeyUp($s)
-    [KeyHoldStableSmokeInput]::KeyUp($w)
+    [RunHoldStableSmokeInput]::KeyUp($a)
+    [RunHoldStableSmokeInput]::KeyUp($s)
+    [RunHoldStableSmokeInput]::KeyUp($w)
     Start-Sleep -Milliseconds 150
 
     $handoffSamples = 0
     $handoffDownSamples = 0
     for ($i = 0; $i -lt 25; $i++) {
-        $allDown = [KeyHoldStableSmokeInput]::IsDown($a) -and [KeyHoldStableSmokeInput]::IsDown($s) -and [KeyHoldStableSmokeInput]::IsDown($w)
+        $allDown = [RunHoldStableSmokeInput]::IsDown($a) -and [RunHoldStableSmokeInput]::IsDown($s) -and [RunHoldStableSmokeInput]::IsDown($w)
         if ($allDown) {
             $handoffDownSamples++
         }
@@ -164,27 +164,27 @@ try {
         throw "Stable hold smoke failed. Expected A/S/W to stay down before physical handoff; saw all three down in $handoffDownSamples of $handoffSamples samples."
     }
 
-    [KeyHoldStableSmokeInput]::KeyDown($w)
+    [RunHoldStableSmokeInput]::KeyDown($w)
     Start-Sleep -Milliseconds 40
-    [KeyHoldStableSmokeInput]::KeyUp($w)
+    [RunHoldStableSmokeInput]::KeyUp($w)
     Start-Sleep -Milliseconds 200
 
-    $anyStillDown = [KeyHoldStableSmokeInput]::IsDown($a) -or [KeyHoldStableSmokeInput]::IsDown($s) -or [KeyHoldStableSmokeInput]::IsDown($w)
+    $anyStillDown = [RunHoldStableSmokeInput]::IsDown($a) -or [RunHoldStableSmokeInput]::IsDown($s) -or [RunHoldStableSmokeInput]::IsDown($w)
     if ($anyStillDown) {
         throw 'Stable hold smoke failed. At least one held key was still down after physical handoff.'
     }
 
-    'KeyHold stable-hold smoke passed: Home toggle held A/S/W after physical release, Home stopped them, and physical W handoff released them.'
+    'RunHold stable-hold smoke passed: Home toggle held A/S/W after physical release, Home stopped them, and physical W handoff released them.'
 }
 finally {
-    [Environment]::SetEnvironmentVariable('KEYHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', $previousSmokeFlag, 'Process')
+    [Environment]::SetEnvironmentVariable('RUNHOLD_ACCEPT_EXTERNAL_INJECTED_INPUT_FOR_SMOKE', $previousSmokeFlag, 'Process')
 
     foreach ($key in @($a, $s, $w, $homeKey)) {
-        [KeyHoldStableSmokeInput]::KeyUp($key)
+        [RunHoldStableSmokeInput]::KeyUp($key)
     }
 
-    if ($keyHoldProcess -and -not $keyHoldProcess.HasExited) {
-        Stop-Process -Id $keyHoldProcess.Id -Force
+    if ($runHoldProcess -and -not $runHoldProcess.HasExited) {
+        Stop-Process -Id $runHoldProcess.Id -Force
     }
 
     if ($hadSettings) {

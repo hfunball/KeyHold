@@ -1,5 +1,5 @@
 param(
-    [string]$ExecutablePath = (Join-Path $PSScriptRoot '..\src\KeyHold\bin\Debug\net10.0-windows\KeyHold.exe')
+    [string]$ExecutablePath = (Join-Path $PSScriptRoot '..\src\RunHold\bin\Debug\net10.0-windows\RunHold.exe')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -146,19 +146,19 @@ function Assert-DarkControlInterior {
 }
 
 if (!(Test-Path -LiteralPath $ExecutablePath)) {
-    throw "KeyHold executable was not found at $ExecutablePath. Run the build first."
+    throw "RunHold executable was not found at $ExecutablePath. Run the build first."
 }
 
-$existing = Get-Process -Name KeyHold -ErrorAction SilentlyContinue
+$existing = Get-Process -Name RunHold -ErrorAction SilentlyContinue
 if ($existing) {
-    throw 'Close any running KeyHold process before running this smoke test.'
+    throw 'Close any running RunHold process before running this smoke test.'
 }
 
 Add-Type -AssemblyName UIAutomationClient
 Add-Type -AssemblyName UIAutomationTypes
 Add-Type -AssemblyName System.Windows.Forms
 
-$settingsPath = Join-Path $env:LOCALAPPDATA 'KeyHold\settings.json'
+$settingsPath = Join-Path $env:LOCALAPPDATA 'RunHold\settings.json'
 $settingsFolder = Split-Path -Parent $settingsPath
 $hadSettings = Test-Path -LiteralPath $settingsPath
 $originalSettings = if ($hadSettings) { Get-Content -LiteralPath $settingsPath -Raw } else { $null }
@@ -178,8 +178,8 @@ try {
     $process = Start-Process -FilePath $ExecutablePath -PassThru
     $root = [System.Windows.Automation.AutomationElement]::RootElement
     $windowCondition = New-Object System.Windows.Automation.PropertyCondition `
-        -ArgumentList ([System.Windows.Automation.AutomationElement]::NameProperty), 'KeyHold'
-    $window = Wait-For { $root.FindFirst([System.Windows.Automation.TreeScope]::Children, $windowCondition) } 'the KeyHold window'
+        -ArgumentList ([System.Windows.Automation.AutomationElement]::NameProperty), 'RunHold'
+    $window = Wait-For { $root.FindFirst([System.Windows.Automation.TreeScope]::Children, $windowCondition) } 'the RunHold window'
 
     Assert-DarkWindow -Window $window
 
@@ -203,7 +203,7 @@ try {
 
     Wait-For { (Get-EditValues -Root $window) -contains 'A' } 'the captured A key' | Out-Null
 
-    'KeyHold UI smoke passed: dark window, toggle-trigger binding UI, capture prompt, and key capture.'
+    'RunHold UI smoke passed: dark window, toggle-trigger binding UI, capture prompt, and key capture.'
 }
 finally {
     if ($process -and -not $process.HasExited) {

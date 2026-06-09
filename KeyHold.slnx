@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="src/KeyHold/KeyHold.csproj" />
-  <Project Path="tests/KeyHold.Tests/KeyHold.Tests.csproj" />
-</Solution>
-

@@ -1,0 +1,19 @@
+PackageIdentifier: REPLACE_WITH_PUBLISHER.RunHold
+PackageVersion: 1.1
+PackageLocale: en-US
+Publisher: REPLACE_WITH_PUBLISHER
+PackageName: RunHold
+License: MIT
+ShortDescription: Held-key utility for games and simple Windows tasks.
+PackageUrl: https://github.com/hfunball/RunHold
+Installers:
+  - Architecture: x64
+    InstallerType: zip
+    NestedInstallerType: portable
+    NestedInstallerFiles:
+      - RelativeFilePath: RunHold.exe
+        PortableCommandAlias: runhold
+    InstallerUrl: https://github.com/hfunball/RunHold/releases/download/v1.1/RunHold-1.1-win-x64-portable.zip
+    InstallerSha256: REPLACE_WITH_SHA256
+ManifestType: singleton
+ManifestVersion: 1.12.0
