@@ -61,6 +61,12 @@ Release planning lives in [docs/release/release-plan.md](docs/release/release-pl
 
 RunHold is licensed under the [MIT License](LICENSE). Copyright (c) 2026 Hfunball and RunHold contributors.
 
+## Privacy
+
+Privacy policy: [PRIVACY.md](PRIVACY.md)
+
+Public Store URL: https://github.com/hfunball/RunHold/blob/main/PRIVACY.md
+
 ## Security Position
 
 RunHold monitors keyboard state and supported mouse trigger buttons, and it injects keyboard input, so it is treated as security-sensitive. It does not include networking, telemetry, credential capture, macro recording, or raw typed-text logging.
