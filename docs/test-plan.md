@@ -22,6 +22,8 @@
 - The Planet Crafter on Steam: long travel with `W`, `W+Space`, and any sprint/movement combo you actually use.
 - Subnautica 2: movement, swim or travel behavior, inventory interruption, and returning to physical control.
 - Satisfactory on Steam: movement, sprint/movement, build-mode interruption, and returning to physical control.
+- Defense Grid 2: older-game movement/input acceptance and clean release.
+- Portal 2: older-game movement/input acceptance and clean release.
 - Add one higher-risk game or app if useful, then record whether it accepts held synthetic input.
 
 ## Safety

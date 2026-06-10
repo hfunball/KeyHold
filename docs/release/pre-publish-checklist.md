@@ -9,8 +9,8 @@ Use this before publishing a GitHub Release or submitting to the Microsoft Store
 - [ ] Run `.\.tools\dotnet\dotnet.exe build RunHold.slnx --configuration Release --no-restore`.
 - [ ] Run `.\.tools\dotnet\dotnet.exe test RunHold.slnx --configuration Release --no-build`.
 - [ ] Run `.\.tools\dotnet\dotnet.exe restore src\RunHold\RunHold.csproj --runtime win-x64`.
-- [ ] Run `.\scripts\publish-github.ps1 -Version 1.1`.
-- [ ] Confirm `artifacts\release\RunHold-1.1-win-x64-portable.zip` exists.
+- [ ] Run `.\scripts\publish-github.ps1 -Version 1.11`.
+- [ ] Confirm `artifacts\release\RunHold-1.11-win-x64-portable.zip` exists.
 - [ ] Confirm the SHA-256 file exists and matches the ZIP.
 
 ## Portable ZIP Test
@@ -18,7 +18,7 @@ Use this before publishing a GitHub Release or submitting to the Microsoft Store
 - [ ] Extract the ZIP to a clean folder, not the build output folder.
 - [ ] Run `RunHold.exe`.
 - [ ] Confirm the app icon and tray icon show the RunHold logo.
-- [ ] Confirm the Read Me tab shows `Version 1.1`.
+- [ ] Confirm the Read Me tab shows `Version 1.11`.
 - [ ] Confirm the app starts minimized to tray after first-run behavior is handled.
 - [ ] Confirm left-clicking the tray icon opens the UI.
 - [ ] Confirm Settings changes do not crash the app.
@@ -43,6 +43,8 @@ Use this before publishing a GitHub Release or submitting to the Microsoft Store
 - [ ] The Planet Crafter: test `W`, `W+Space`, long travel, stop, and physical handoff.
 - [ ] Subnautica 2: test movement, swim or travel behavior, inventory interruption, stop, and physical handoff.
 - [ ] Satisfactory: test movement, sprint/movement, build-mode interruption, stop, and physical handoff.
+- [ ] Defense Grid 2: test older-game input behavior, stop, and physical handoff.
+- [ ] Portal 2: test older-game input behavior, stop, and physical handoff.
 - [ ] Record any game where synthetic held keys are ignored or behave differently.
 
 ## Safety Tests
@@ -59,7 +61,7 @@ Use this before publishing a GitHub Release or submitting to the Microsoft Store
 
 - [ ] Confirm the repo is named `RunHold`.
 - [ ] Confirm README links point to `https://github.com/hfunball/RunHold`.
-- [ ] Create tag `v1.1`.
+- [ ] Create tag `v1.11`.
 - [ ] Upload the ZIP and SHA-256 file.
 - [ ] Include a short release note with tested games and known limitations.
 - [ ] Add GitHub topics such as `windows`, `wpf`, `keyboard`, `tray-app`, `gaming-utility`, `key-hold`, `movement-keys`, and `run-key`.

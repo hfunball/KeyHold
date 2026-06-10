@@ -26,7 +26,7 @@ public sealed class MainWindowTests
             Assert.IsFalse(Find<CheckBox>(window, "StopOnAnyKeyBox").IsChecked == true);
             var readMeViewer = Find<FlowDocumentScrollViewer>(window, "ReadMeViewer");
             Assert.AreEqual(new Thickness(0, 0, 35, 0), readMeViewer.Document.PagePadding);
-            Assert.AreEqual("Version 1.1", Find<TextBlock>(window, "ReadMeVersionText").Text);
+            Assert.AreEqual("Version 1.11", Find<TextBlock>(window, "ReadMeVersionText").Text);
             Assert.IsFalse(GetDocumentText(readMeViewer.Document).Contains("# RunHold", StringComparison.Ordinal));
             Assert.IsNull(window.FindName(string.Concat("Activation", "ModeBox")));
             Assert.IsNull(window.FindName(string.Concat("Stop", "BindingPanel")));
@@ -76,6 +76,30 @@ public sealed class MainWindowTests
 
             Assert.AreEqual("Mouse Button 4", Find<TextBox>(window, "ToggleBindingText").Text);
             Assert.AreEqual("Set Toggle Trigger", button.Content);
+        }
+        finally
+        {
+            Close(window);
+        }
+    }
+
+    [STATestMethod]
+    public void ThemeChangeRefreshesReadMeDocument()
+    {
+        var window = CreateWindow(new AppSettings { Theme = RunHold.Models.ThemeMode.Dark });
+        try
+        {
+            var readMeViewer = Find<FlowDocumentScrollViewer>(window, "ReadMeViewer");
+            var originalDocument = readMeViewer.Document;
+            var themeBox = Find<ComboBox>(window, "ThemeBox");
+            var lightItem = themeBox.Items.OfType<ComboBoxItem>().Single(item => string.Equals((string)item.Tag, "Light", StringComparison.Ordinal));
+
+            themeBox.SelectedItem = lightItem;
+
+            Assert.AreNotSame(originalDocument, readMeViewer.Document);
+            Assert.AreEqual(new Thickness(0, 0, 35, 0), readMeViewer.Document.PagePadding);
+            Assert.AreEqual("Version 1.11", Find<TextBlock>(window, "ReadMeVersionText").Text);
+            Assert.IsFalse(GetDocumentText(readMeViewer.Document).Contains("# RunHold", StringComparison.Ordinal));
         }
         finally
         {

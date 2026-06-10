@@ -29,9 +29,9 @@ Microsoft's current guidance for WPF and WinForms apps is to add a Windows Appli
 
 Before public release, test this locally with two package versions:
 
-1. Install package `1.1.0.0`.
+1. Install package `1.11.0.0`.
 2. Configure the toggle trigger, theme, startup setting, and stop-on-any-key setting.
-3. Upgrade to package `1.1.1.0`.
+3. Upgrade to package `1.12.0.0`.
 4. Confirm settings survived.
 5. Confirm startup remains off unless the user opted in.
 6. Confirm hooks and held-key behavior still work after upgrade.

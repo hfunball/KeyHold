@@ -157,6 +157,7 @@ public partial class MainWindow
             TryApplyStartupSetting(StartupBox.IsChecked == true);
             engine.UpdateSettings(settings);
             ThemeService.Apply(settings.Theme);
+            LoadReadMeToUi();
             UpdateBindingUi();
         }
         catch (Exception ex) when (ex is ArgumentException or IOException or UnauthorizedAccessException or InvalidOperationException)
@@ -471,7 +472,7 @@ public partial class MainWindow
                 : informationalVersion;
         }
 
-        return typeof(MainWindow).Assembly.GetName().Version?.ToString(2) ?? "1.1";
+        return typeof(MainWindow).Assembly.GetName().Version?.ToString(2) ?? "1.11";
     }
 
     private Paragraph CreateParagraph(string text, double size, FontWeight weight, double left, double top, double right, double bottom)

@@ -18,7 +18,7 @@ Target package type: MSIX.
 Expected user experience:
 
 - User installs RunHold from the Microsoft Store.
-- Microsoft Store delivers 1.1, 1.2, and later updates.
+- Microsoft Store delivers 1.11, 1.2, and later updates.
 - The app keeps the same package identity across updates, so user settings should remain available.
 - Store signing is handled by Microsoft for MSIX packages submitted through Partner Center.
 
@@ -52,8 +52,9 @@ Better future GitHub path:
 
 ## Versioning
 
-- Use tags like `v1.1`.
+- Use tags like `v1.11`.
 - The publish script trims the leading `v` for assembly and artifact versions.
+- Treat `1.2` as the next release-candidate version after the `1.11` cleanup build.
 - Release artifacts should include both the ZIP and `.sha256.txt` checksum.
 
 ## References

@@ -1,5 +1,5 @@
 PackageIdentifier: REPLACE_WITH_PUBLISHER.RunHold
-PackageVersion: 1.1
+PackageVersion: 1.11
 PackageLocale: en-US
 Publisher: REPLACE_WITH_PUBLISHER
 PackageName: RunHold
@@ -13,7 +13,7 @@ Installers:
     NestedInstallerFiles:
       - RelativeFilePath: RunHold.exe
         PortableCommandAlias: runhold
-    InstallerUrl: https://github.com/hfunball/RunHold/releases/download/v1.1/RunHold-1.1-win-x64-portable.zip
+    InstallerUrl: https://github.com/hfunball/RunHold/releases/download/v1.11/RunHold-1.11-win-x64-portable.zip
     InstallerSha256: REPLACE_WITH_SHA256
 ManifestType: singleton
 ManifestVersion: 1.12.0

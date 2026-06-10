@@ -1,5 +1,5 @@
 param(
-    [string]$Version = '1.1',
+    [string]$Version = '1.11',
     [string]$Runtime = 'win-x64',
     [string]$Configuration = 'Release',
     [string]$DotNetPath,
@@ -15,7 +15,7 @@ $artifactsRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'artifacts')
 
 $parsedVersion = $null
 if (-not [System.Version]::TryParse($normalizedVersion, [ref]$parsedVersion)) {
-    throw "Version '$Version' is not a valid numeric version. Use a value like 1.1."
+    throw "Version '$Version' is not a valid numeric version. Use a value like 1.11."
 }
 
 $buildVersion = [Math]::Max(0, $parsedVersion.Build)
