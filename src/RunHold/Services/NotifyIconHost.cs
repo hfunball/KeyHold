@@ -59,8 +59,7 @@ public sealed class NotifyIconHost : IDisposable
         var menu = new ContextMenuStrip();
         menu.Items.Add("Open RunHold", null, (_, _) => showWindow());
         menu.Items.Add("Release All", null, (_, _) => engine.ReleaseAll("Tray release"));
-        menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("Exit", null, (_, _) => exitApplication());
+        menu.Items.Add("Exit RunHold", null, (_, _) => exitApplication());
         return menu;
     }
 
