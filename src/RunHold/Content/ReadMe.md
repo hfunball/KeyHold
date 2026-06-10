@@ -23,6 +23,6 @@
 
 - Source code and releases: https://github.com/hfunball/RunHold
 - RunHold is licensed under the MIT License.
-- Copyright (c) 2026 Jason Echols.
+- Copyright (c) 2026 RunHold contributors.
 - The full license text is included with the release package and in the source repository.
 - To report a bug or security issue, include the RunHold version, Windows version, install method, trigger key or button, held keys, and the game or app you tested.
